@@ -7,6 +7,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { type AnyLexicalExtension } from 'lexical';
 import { ReactNode, useState } from 'react';
 import EditorToolbarPlugin from '../components/editor-toolbar-plugin';
+import EditorBlockControlPlugin from '../components/editor-block-control-plugin';
 
 export function Editor({
 	lexicalExtension,
@@ -75,12 +76,11 @@ export function Editor({
 					{floatingAnchorElem && showToolbar && (
 						<EditorToolbarPlugin anchorElem={floatingAnchorElem} />
 					)}
-					{/* {floatingAnchorElem && showBlockHandle && (
-						<BlockControlPlugin
+					{floatingAnchorElem && showBlockHandle && (
+						<EditorBlockControlPlugin
 							anchorElem={floatingAnchorElem}
-							blocks={props.editor.blocks}
 						/>
-					)} */}
+					)}
 					{children}
 					{/* {onChange && <OnChangePlugin onChange={onChange} />} */}
 				</div>

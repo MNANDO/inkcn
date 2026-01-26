@@ -32,6 +32,10 @@
                     "type": "registry:component"
                 },
                 {
+                    "path": "registry/components/editor-block-control-plugin.tsx",
+                    "type": "registry:component"
+                },
+                {
                     "path": "registry/hooks/use-editor-toolbar.ts",
                     "type": "registry:hook"
                 },
