@@ -20,7 +20,7 @@
             ],
             "files": [
                 {
-                    "path": "registry/blocks/editor.tsx",
+                    "path": "registry/blocks/editor-view.tsx",
                     "type": "registry:component"
                 },
                 {
@@ -40,7 +40,27 @@
                     "type": "registry:hook"
                 },
                 {
+                    "path": "registry/hooks/use-create-editor.ts",
+                    "type": "registry:hook"
+                },
+                {
                     "path": "registry/lib/editor-utils.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/Editor.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/base-nodes.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/default-theme.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/editor-theme.css",
                     "type": "registry:lib"
                 }
             ]

@@ -4,30 +4,32 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { LexicalExtensionComposer } from '@lexical/react/LexicalExtensionComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { type AnyLexicalExtension } from 'lexical';
+import { EditorState, LexicalEditor } from 'lexical';
 import { ReactNode, useState } from 'react';
 import EditorToolbarPlugin from '../components/editor-toolbar-plugin';
 import EditorBlockControlPlugin from '../components/editor-block-control-plugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { Editor } from '../lib/Editor';
 
-export function Editor({
-	lexicalExtension,
+export function EditorView({
+	editor,
 	className,
 	placeholder,
 	showBlockHandle = true,
 	showToolbar = true,
-	// onChange,
+	onChange,
 	children,
 }: {
-	lexicalExtension: AnyLexicalExtension;
+	editor: Editor;
 	className?: string;
 	placeholder?: string;
 	showBlockHandle?: boolean;
 	showToolbar?: boolean;
-	// onChange?: (
-	// 	editorState: EditorState,
-	// 	editor: LexicalEditor,
-	// 	tags: Set<string>,
-	// ) => void;
+	onChange?: (
+		editorState: EditorState,
+		editor: LexicalEditor,
+		tags: Set<string>,
+	) => void;
 	children?: ReactNode;
 }) {
 	const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -44,7 +46,7 @@ export function Editor({
 
 	return (
 		<LexicalExtensionComposer
-			extension={lexicalExtension}
+			extension={editor.lexicalExtension}
 			contentEditable={null}
 		>
 			<div
@@ -82,7 +84,7 @@ export function Editor({
 						/>
 					)}
 					{children}
-					{/* {onChange && <OnChangePlugin onChange={onChange} />} */}
+					{onChange && <OnChangePlugin onChange={onChange} />}
 				</div>
 			</div>
 		</LexicalExtensionComposer>

@@ -1,3 +1,5 @@
+'use client';
+
 import { mergeRegister } from '@lexical/utils';
 import {
 	$getSelection,

@@ -9,9 +9,12 @@
             "title": "Editor",
             "description": "A Notion style rich text editor created with Lexical.",
             "dependencies": [
-                "lexical",
+                "@lexical/extension",
+                "@lexical/list",
                 "@lexical/react",
-                "@lexical/extension"
+                "@lexical/rich-text",
+                "@lexical/selection",
+                "lexical"
             ],
             "registryDependencies": [
                 "toggle-group",
@@ -20,7 +23,7 @@
             ],
             "files": [
                 {
-                    "path": "registry/blocks/editor.tsx",
+                    "path": "registry/blocks/editor-view.tsx",
                     "type": "registry:component"
                 },
                 {
@@ -40,7 +43,27 @@
                     "type": "registry:hook"
                 },
                 {
+                    "path": "registry/hooks/use-create-editor.ts",
+                    "type": "registry:hook"
+                },
+                {
                     "path": "registry/lib/editor-utils.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/Editor.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/base-nodes.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/default-theme.ts",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/editor-theme.css",
                     "type": "registry:lib"
                 }
             ]

@@ -1,11 +1,11 @@
-import { Editor } from '@/components/editor';
+'use client';
+
+import { EditorView } from '@/components/editor-view';
 import { Button } from '@/components/ui/button';
-import { defineExtension } from 'lexical';
+import { useCreateEditor } from '@/hooks/use-create-editor';
 
 export default function Home() {
-	const extension = defineExtension({
-		name: 'Inkcn',
-	});
+	const editor = useCreateEditor();
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -24,7 +24,7 @@ export default function Home() {
 
 				{/* Editor Placeholder */}
 				<div className="mb-12 min-h-100">
-					<Editor lexicalExtension={extension} />
+					<EditorView editor={editor} />
 				</div>
 
 				{/* Install Section */}
