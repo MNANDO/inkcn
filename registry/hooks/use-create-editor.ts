@@ -1,12 +1,19 @@
 'use client';
 
-import { EditorThemeClasses } from 'lexical';
+import {
+	AnyLexicalExtension,
+	EditorThemeClasses,
+	Klass,
+	LexicalNode,
+} from 'lexical';
 import { useState } from 'react';
 import { Editor } from '../lib/Editor';
 
 export interface UseCreateEditorOptions {
 	name?: string;
 	theme?: EditorThemeClasses;
+	nodes?: Array<Klass<LexicalNode>>;
+	extensions?: AnyLexicalExtension[];
 }
 
 export const useCreateEditor = (options: UseCreateEditorOptions = {}) => {
