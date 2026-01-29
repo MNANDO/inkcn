@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import Toolbar from '@/components/editor-toolbar';
+import EditorToolbar from './editor-toolbar';
 
 export default function EditorToolbarPlugin({
 	anchorElem = document.body,
@@ -9,5 +9,5 @@ export default function EditorToolbarPlugin({
 	anchorElem?: HTMLElement;
 }): JSX.Element | null {
 	const [editor] = useLexicalComposerContext();
-	return <Toolbar editor={editor} anchorElem={anchorElem} />;
+	return <EditorToolbar editor={editor} anchorElem={anchorElem} />;
 }

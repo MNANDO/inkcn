@@ -46,7 +46,6 @@ export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 			editor.getEditorState().read(() => {
 				if (editor.isComposing()) return;
 
-				// Don't show toolbar while mouse is down (still selecting)
 				if (isMouseDownRef.current && !forceShow) {
 					return;
 				}
@@ -107,13 +106,11 @@ export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 
 		const handleMouseDown = () => {
 			isMouseDownRef.current = true;
-			// Hide toolbar when starting a new selection
 			setEditorToolbarState(DEFAULT_STATE);
 		};
 
 		const handleMouseUp = () => {
 			isMouseDownRef.current = false;
-			// Show toolbar after mouse is released
 			update(true);
 		};
 

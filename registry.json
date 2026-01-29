@@ -23,7 +23,7 @@
             ],
             "files": [
                 {
-                    "path": "registry/blocks/editor-view.tsx",
+                    "path": "registry/components/editor-view.tsx",
                     "type": "registry:component"
                 },
                 {
@@ -39,6 +39,18 @@
                     "type": "registry:component"
                 },
                 {
+                    "path": "registry/components/editor-block-picker-plugin.tsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "registry/components/block-picker-menu-item.tsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "registry/components/editor-modal.tsx",
+                    "type": "registry:component"
+                },
+                {
                     "path": "registry/hooks/use-editor-toolbar.ts",
                     "type": "registry:hook"
                 },
@@ -47,11 +59,15 @@
                     "type": "registry:hook"
                 },
                 {
+                    "path": "registry/hooks/use-editor-modal.ts",
+                    "type": "registry:hook"
+                },
+                {
                     "path": "registry/lib/editor-utils.ts",
                     "type": "registry:lib"
                 },
                 {
-                    "path": "registry/lib/Editor.ts",
+                    "path": "registry/lib/Editor.tsx",
                     "type": "registry:lib"
                 },
                 {
@@ -64,6 +80,14 @@
                 },
                 {
                     "path": "registry/lib/editor-theme.css",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/base-block-picker-options.tsx",
+                    "type": "registry:lib"
+                },
+                {
+                    "path": "registry/lib/BlockPickerOption.ts",
                     "type": "registry:lib"
                 }
             ]
