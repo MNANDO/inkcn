@@ -28,6 +28,7 @@ export interface EditorOptions {
 
 export class Editor {
 	private _lexicalExtension: AnyLexicalExtension;
+	private _blockPickerOptions: BlockPickerOption[];
 
 	constructor(options: EditorOptions) {
 		const {
@@ -37,6 +38,7 @@ export class Editor {
 			theme = {},
 			blockPickerOptions = [],
 		} = options;
+		this._blockPickerOptions = [...baseBlockPickerOptions, ...blockPickerOptions];
 		this._lexicalExtension = defineExtension({
 			name,
 			nodes: [...baseNodes, ...nodes],
@@ -65,5 +67,9 @@ export class Editor {
 
 	get lexicalExtension() {
 		return this._lexicalExtension;
+	}
+
+	get blockPickerOptions() {
+		return this._blockPickerOptions;
 	}
 }

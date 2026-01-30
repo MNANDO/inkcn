@@ -43,11 +43,11 @@
                     "type": "registry:component"
                 },
                 {
-                    "path": "registry/components/block-picker-menu-item.tsx",
+                    "path": "registry/components/block-picker-menu.tsx",
                     "type": "registry:component"
                 },
                 {
-                    "path": "registry/components/editor-modal.tsx",
+                    "path": "registry/components/block-picker-menu-item.tsx",
                     "type": "registry:component"
                 },
                 {
@@ -56,10 +56,6 @@
                 },
                 {
                     "path": "registry/hooks/use-create-editor.ts",
-                    "type": "registry:hook"
-                },
-                {
-                    "path": "registry/hooks/use-editor-modal.ts",
                     "type": "registry:hook"
                 },
                 {

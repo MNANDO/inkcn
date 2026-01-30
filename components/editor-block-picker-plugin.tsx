@@ -9,12 +9,8 @@ import { TextNode } from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import useModal from '../hooks/use-editor-modal';
-import EditorModal from './editor-modal';
 import { BlockPickerOption } from '../lib/BlockPickerOption';
-import { BlockPickerMenuItem } from './block-picker-menu-item';
-
-export type ShowModal = ReturnType<typeof useModal>['showModal'];
+import { BlockPickerMenu } from './block-picker-menu';
 
 type BlockPickerPluginProps = {
 	options: BlockPickerOption[];
@@ -24,8 +20,6 @@ export default function BlockPickerPlugin({
 	options,
 }: BlockPickerPluginProps): JSX.Element {
 	const [editor] = useLexicalComposerContext();
-
-	const { modalState, closeModal } = useModal();
 
 	const [queryString, setQueryString] = useState<string | null>(null);
 
@@ -68,8 +62,6 @@ export default function BlockPickerPlugin({
 
 	return (
 		<>
-			<EditorModal modalState={modalState} onClose={closeModal} />
-
 			<LexicalTypeaheadMenuPlugin<BlockPickerOption>
 				onQueryChange={setQueryString}
 				onSelectOption={onSelectOption}
@@ -85,41 +77,14 @@ export default function BlockPickerPlugin({
 				) =>
 					anchorElementRef.current && filteredOptions.length
 						? ReactDOM.createPortal(
-								<div className="min-w-50 max-h-50 overflow-y-auto rounded-lg bg-white p-1 shadow-md border">
-									<ul className="list-none m-0 p-0">
-										{filteredOptions.map(
-											(option, i: number) => {
-												return (
-													<BlockPickerMenuItem
-														key={option.key}
-														index={i}
-														isSelected={
-															selectedIndex === i
-														}
-														onClick={() => {
-															setHighlightedIndex(
-																i,
-															);
-															selectOptionAndCleanUp(
-																option,
-															);
-														}}
-														onMouseEnter={() => {
-															setHighlightedIndex(
-																i,
-															);
-														}}
-														setRefElement={
-															option.setRefElement
-														}
-														icon={option.icon}
-														title={option.title}
-													/>
-												);
-											},
-										)}
-									</ul>
-								</div>,
+								<BlockPickerMenu
+									options={filteredOptions}
+									selectedIndex={selectedIndex}
+									onSelectOption={(option) => {
+										selectOptionAndCleanUp(option);
+									}}
+									onSetHighlightedIndex={setHighlightedIndex}
+								/>,
 								anchorElementRef.current,
 							)
 						: null

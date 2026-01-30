@@ -6,8 +6,8 @@ import { LexicalExtensionComposer } from '@lexical/react/LexicalExtensionCompose
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EditorState, LexicalEditor } from 'lexical';
 import { ReactNode, useState } from 'react';
-import EditorToolbarPlugin from '../components/editor-toolbar-plugin';
-import EditorBlockControlPlugin from '../components/editor-block-control-plugin';
+import EditorToolbarPlugin from './editor-toolbar-plugin';
+import EditorBlockControlPlugin from './editor-block-control-plugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { Editor } from '../lib/Editor';
 
@@ -81,6 +81,7 @@ export function EditorView({
 					{floatingAnchorElem && showBlockHandle && (
 						<EditorBlockControlPlugin
 							anchorElem={floatingAnchorElem}
+							options={editor.blockPickerOptions}
 						/>
 					)}
 					{children}
