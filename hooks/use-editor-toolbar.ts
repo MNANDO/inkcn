@@ -6,8 +6,10 @@ import {
 	getDOMSelection,
 	LexicalEditor,
 } from 'lexical';
+import { $isHeadingNode, $isQuoteNode } from '@lexical/rich-text';
+import { $isListNode, ListNode } from '@lexical/list';
+import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { mergeRegister } from '@lexical/utils';
 import { getSelectedNode } from '../lib/editor-utils';
 
 export type EditorToolbarState = {
@@ -21,6 +23,7 @@ export type EditorToolbarState = {
 	isStrikethrough: boolean;
 	isSubscript: boolean;
 	isSuperscript: boolean;
+	blockType: string;
 };
 
 const DEFAULT_STATE: EditorToolbarState = {
@@ -34,7 +37,38 @@ const DEFAULT_STATE: EditorToolbarState = {
 	isStrikethrough: false,
 	isSubscript: false,
 	isSuperscript: false,
+	blockType: 'paragraph',
 };
+
+function $getBlockType(editor: LexicalEditor, selection: ReturnType<typeof $getSelection>): string {
+	if (!$isRangeSelection(selection)) return 'paragraph';
+
+	const anchorNode = selection.anchor.getNode();
+	const element =
+		anchorNode.getKey() === 'root'
+			? anchorNode
+			: anchorNode.getTopLevelElementOrThrow();
+
+	const elementDOM = editor.getElementByKey(element.getKey());
+	if (elementDOM === null) return 'paragraph';
+
+	if ($isListNode(element)) {
+		const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
+		const type = parentList ? parentList.getListType() : element.getListType();
+		if (type === 'number') return 'ordered-list';
+		if (type === 'check') return 'check-list';
+		return 'unordered-list';
+	}
+
+	if ($isHeadingNode(element)) {
+		const tag = element.getTag();
+		return `heading-${tag.replace('h', '')}`;
+	}
+
+	if ($isQuoteNode(element)) return 'quote';
+
+	return 'paragraph';
+}
 
 export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 	const [toolbarState, setEditorToolbarState] =
@@ -94,6 +128,7 @@ export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 					isStrikethrough: selection.hasFormat('strikethrough'),
 					isSubscript: selection.hasFormat('subscript'),
 					isSuperscript: selection.hasFormat('superscript'),
+					blockType: $getBlockType(editor, selection),
 				});
 			});
 		},
