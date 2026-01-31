@@ -3,6 +3,7 @@
 import { mergeRegister } from '@lexical/utils';
 import {
 	$getSelection,
+	$isRangeSelection,
 	COMMAND_PRIORITY_LOW,
 	FORMAT_TEXT_COMMAND,
 	getDOMSelection,
@@ -190,10 +191,6 @@ export default function EditorToolbar({
 
 	if (!state.isVisible) return null;
 
-	const clearSelection = () => {
-		window.getSelection()?.removeAllRanges();
-	};
-
 	const handleValueChange = (values: string[]) => {
 		const formats: TextFormatType[] = [
 			'bold',
@@ -233,7 +230,7 @@ export default function EditorToolbar({
 		>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs">
+					<Button variant="ghost">
 						{currentBlock?.icon}
 						<span>{currentBlock?.title ?? 'Paragraph'}</span>
 						<ChevronDown className="h-3 w-3" />
@@ -245,9 +242,20 @@ export default function EditorToolbar({
 							key={option.key}
 							onSelect={() => {
 								option.insert({ editor, queryString: '' });
-								clearSelection();
+								editor.update(() => {
+									const selection = $getSelection();
+									if ($isRangeSelection(selection)) {
+										selection.focus.set(
+											selection.anchor.key,
+											selection.anchor.offset,
+											selection.anchor.type,
+										);
+									}
+								});
 							}}
-							className={blockType === option.key ? 'bg-accent' : ''}
+							className={
+								blockType === option.key ? 'bg-accent' : ''
+							}
 						>
 							<span className="mr-2 h-4 w-4">{option.icon}</span>
 							{option.title}

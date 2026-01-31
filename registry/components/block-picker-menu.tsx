@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { useRef, useEffect } from 'react';
 
 import { BlockPickerOption } from '../lib/BlockPickerOption';
+import { Input } from '@/components/ui/input';
 import { BlockPickerMenuItem } from './block-picker-menu-item';
 
 type BlockPickerMenuProps = {
@@ -8,6 +9,8 @@ type BlockPickerMenuProps = {
 	selectedIndex: number | null;
 	onSelectOption: (option: BlockPickerOption, index: number) => void;
 	onSetHighlightedIndex: (index: number) => void;
+	queryString?: string;
+	onQueryChange?: (query: string) => void;
 };
 
 export function BlockPickerMenu({
@@ -15,28 +18,55 @@ export function BlockPickerMenu({
 	selectedIndex,
 	onSelectOption,
 	onSetHighlightedIndex,
+	queryString,
+	onQueryChange,
 }: BlockPickerMenuProps) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
+
 	return (
-		<div className="min-w-50 max-h-50 overflow-y-auto rounded-lg bg-white p-1 shadow-md border">
-			<ul className="list-none m-0 p-0">
-				{options.map((option, i: number) => (
-					<BlockPickerMenuItem
-						key={option.key}
-						index={i}
-						isSelected={selectedIndex === i}
-						onClick={() => {
-							onSetHighlightedIndex(i);
-							onSelectOption(option, i);
-						}}
-						onMouseEnter={() => {
-							onSetHighlightedIndex(i);
-						}}
-						setRefElement={option.setRefElement}
-						icon={option.icon}
-						title={option.title}
+		<div className="bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 z-50 min-w-50 rounded-md border p-1 shadow-md">
+			{onQueryChange != null && (
+				<div className="p-1 pb-0 mb-1">
+					<Input
+						ref={inputRef}
+						placeholder="Filter blocks..."
+						value={queryString ?? ''}
+						onChange={(e) => onQueryChange(e.target.value)}
+						className="h-7 text-xs"
 					/>
-				))}
-			</ul>
+				</div>
+			)}
+			<div className="max-h-50 overflow-y-auto">
+				{options.length > 0 ? (
+					<ul className="list-none m-0 p-0 mt-1">
+						{options.map((option, i: number) => (
+							<BlockPickerMenuItem
+								key={option.key}
+								index={i}
+								isSelected={selectedIndex === i}
+								onClick={() => {
+									onSetHighlightedIndex(i);
+									onSelectOption(option, i);
+								}}
+								onMouseEnter={() => {
+									onSetHighlightedIndex(i);
+								}}
+								setRefElement={option.setRefElement}
+								icon={option.icon}
+								title={option.title}
+							/>
+						))}
+					</ul>
+				) : (
+					<p className="text-muted-foreground text-xs px-2 py-1.5 mt-1">
+						No results
+					</p>
+				)}
+			</div>
 		</div>
 	);
 }

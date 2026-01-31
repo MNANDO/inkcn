@@ -3,6 +3,7 @@
 import { mergeRegister } from '@lexical/utils';
 import {
 	$getSelection,
+	$isRangeSelection,
 	COMMAND_PRIORITY_LOW,
 	FORMAT_TEXT_COMMAND,
 	getDOMSelection,
@@ -23,29 +24,31 @@ import {
 
 import { getDOMRangeRect, setFloatingElemPosition } from '../lib/editor-utils';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useEditorToolbar } from '../hooks/use-editor-toolbar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import type { BlockPickerOption } from '../lib/BlockPickerOption';
+import { useEditorToolbar } from '../hooks/use-editor-toolbar';
 
 export default function EditorToolbar({
 	editor,
 	anchorElem,
+	options,
 }: {
 	editor: LexicalEditor;
 	anchorElem: HTMLElement;
+	options: BlockPickerOption[];
 }): JSX.Element | null {
 	const state = useEditorToolbar(editor);
 	const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
 
-	const { isBold, isItalic, isUnderline, isStrikethrough } = state;
+	const { isBold, isItalic, isUnderline, isStrikethrough, blockType } = state;
+
+	const currentBlock = options.find((opt) => opt.key === blockType);
 
 	// Callback ref to position toolbar immediately when element is created
 	const setPopupRef = useCallback(
@@ -188,10 +191,6 @@ export default function EditorToolbar({
 
 	if (!state.isVisible) return null;
 
-	const clearSelection = () => {
-		window.getSelection()?.removeAllRanges();
-	};
-
 	const handleValueChange = (values: string[]) => {
 		const formats: TextFormatType[] = [
 			'bold',
@@ -215,11 +214,55 @@ export default function EditorToolbar({
 		});
 	};
 
+	// Filter to only block-type options (exclude alignment, dividers)
+	const blockOptions = options.filter(
+		(opt) =>
+			opt.category === 'basic' ||
+			opt.category === 'headings' ||
+			opt.category === 'lists' ||
+			opt.category === 'quotes',
+	);
+
 	return createPortal(
 		<div
 			ref={setPopupRef}
 			className="absolute z-50 flex items-center gap-0.5 rounded-md border bg-popover p-1 shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-150"
 		>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost">
+						{currentBlock?.icon}
+						<span>{currentBlock?.title ?? 'Paragraph'}</span>
+						<ChevronDown className="h-3 w-3" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="start">
+					{blockOptions.map((option) => (
+						<DropdownMenuItem
+							key={option.key}
+							onSelect={() => {
+								option.insert({ editor, queryString: '' });
+								editor.update(() => {
+									const selection = $getSelection();
+									if ($isRangeSelection(selection)) {
+										selection.focus.set(
+											selection.anchor.key,
+											selection.anchor.offset,
+											selection.anchor.type,
+										);
+									}
+								});
+							}}
+							className={
+								blockType === option.key ? 'bg-accent' : ''
+							}
+						>
+							<span className="mr-2 h-4 w-4">{option.icon}</span>
+							{option.title}
+						</DropdownMenuItem>
+					))}
+				</DropdownMenuContent>
+			</DropdownMenu>
 			{editor.isEditable() && (
 				<ToggleGroup
 					type="multiple"
@@ -265,37 +308,6 @@ export default function EditorToolbar({
 					</ToggleGroupItem>
 				</ToggleGroup>
 			)}
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="outline">
-						Open <ChevronDown />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent>
-					<DropdownMenuGroup>
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
-						<DropdownMenuItem onSelect={clearSelection}>
-							Profile
-						</DropdownMenuItem>
-						<DropdownMenuItem onSelect={clearSelection}>
-							Billing
-						</DropdownMenuItem>
-						<DropdownMenuItem onSelect={clearSelection}>
-							Settings
-						</DropdownMenuItem>
-					</DropdownMenuGroup>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onSelect={clearSelection}>
-						GitHub
-					</DropdownMenuItem>
-					<DropdownMenuItem onSelect={clearSelection}>
-						Support
-					</DropdownMenuItem>
-					<DropdownMenuItem onSelect={clearSelection} disabled>
-						API
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
 		</div>,
 		anchorElem,
 	);

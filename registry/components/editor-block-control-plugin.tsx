@@ -1,25 +1,39 @@
 'use client';
 
+import type { NodeKey } from 'lexical';
 import type { JSX } from 'react';
 
 import { DraggableBlockPlugin_EXPERIMENTAL } from '@lexical/react/LexicalDraggableBlockPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
-	$getNearestNodeFromDOMNode,
-	$setSelection,
-	$createRangeSelection,
 	$createParagraphNode,
+	$createTextNode,
+	$getNearestNodeFromDOMNode,
+	$getNodeByKey,
+	$isParagraphNode,
+	$isTextNode,
 } from 'lexical';
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { GripVertical, Plus } from 'lucide-react';
 
 import { BlockPickerOption } from '../lib/BlockPickerOption';
 import { BlockPickerMenu } from './block-picker-menu';
 
+const DRAGGABLE_BLOCK_MENU_CLASSNAME = 'draggable-block-menu';
+
+type PickerState = {
+	paragraphKey: NodeKey;
+};
+
 type BlockControlPluginProps = {
 	anchorElem?: HTMLElement;
 	options?: BlockPickerOption[];
 };
+
+function isOnMenu(element: HTMLElement): boolean {
+	return !!element.closest(`.${DRAGGABLE_BLOCK_MENU_CLASSNAME}`);
+}
 
 export default function EditorBlockControlPlugin({
 	anchorElem = document.body,
@@ -27,100 +41,213 @@ export default function EditorBlockControlPlugin({
 }: BlockControlPluginProps): JSX.Element {
 	const [editor] = useLexicalComposerContext();
 	const menuRef = useRef<HTMLDivElement>(null);
+	const pickerRef = useRef<HTMLDivElement>(null);
 	const targetLineRef = useRef<HTMLDivElement>(null);
-	const draggableBlockElemRef = useRef<HTMLElement | null>(null);
-	const plusButtonRef = useRef<HTMLButtonElement>(null);
+	const [draggableElement, setDraggableElement] =
+		useState<HTMLElement | null>(null);
+	const [pickerState, setPickerState] = useState<PickerState | null>(null);
+	const [isPickerOpen, setIsPickerOpen] = useState(false);
+	const [queryString, setQueryString] = useState('');
+	const [highlightedIndex, setHighlightedIndex] = useState(0);
+	const [pickerPosition, setPickerPosition] = useState<{
+		left: number;
+		top: number;
+		anchor: 'top' | 'bottom';
+	} | null>(null);
 
-	const [showBlockPicker, setShowBlockPicker] = useState(false);
-	const [selectedIndex, setSelectedIndex] = useState(0);
+	const filteredOptions = useMemo(() => {
+		if (!queryString) return options;
+		const regex = new RegExp(queryString, 'i');
+		return options.filter(
+			(option) =>
+				regex.test(option.title) ||
+				option.keywords.some((keyword) => regex.test(keyword)),
+		);
+	}, [options, queryString]);
 
-	const handleElementChanged = useCallback((element: HTMLElement | null) => {
-		draggableBlockElemRef.current = element;
-		setShowBlockPicker(false);
-	}, []);
-
-	const isOnMenu = useCallback((element: HTMLElement): boolean => {
-		return !!menuRef.current?.contains(element);
-	}, []);
-
-	const handlePlusClick = useCallback(() => {
-		editor.update(() => {
-			const blockElem = draggableBlockElemRef.current;
-			if (blockElem) {
-				const node = $getNearestNodeFromDOMNode(blockElem);
-				if (node) {
-					const newParagraph = $createParagraphNode();
-					node.insertAfter(newParagraph);
-					const selection = $createRangeSelection();
-					selection.anchor.set(newParagraph.getKey(), 0, 'element');
-					selection.focus.set(newParagraph.getKey(), 0, 'element');
-					$setSelection(selection);
-				}
-			}
-		});
-		setShowBlockPicker(true);
-		setSelectedIndex(0);
-	}, [editor]);
-
-	const handleSelectOption = useCallback(
-		(option: BlockPickerOption) => {
-			editor.update(() => {
-				option.insert({ editor, queryString: '' });
-			});
-			setShowBlockPicker(false);
-		},
-		[editor],
-	);
+	const clampedIndex = filteredOptions.length > 0
+		? Math.min(highlightedIndex, filteredOptions.length - 1)
+		: 0;
 
 	// Close on click outside
 	useEffect(() => {
-		if (!showBlockPicker) return;
-		const handleClick = (e: MouseEvent) => {
+		if (!isPickerOpen) return;
+		const handleClickOutside = (event: MouseEvent) => {
+			const target = event.target as Node | null;
 			if (
-				menuRef.current &&
-				!menuRef.current.contains(e.target as Node)
+				(pickerRef.current && pickerRef.current.contains(target)) ||
+				(menuRef.current && menuRef.current.contains(target))
 			) {
-				setShowBlockPicker(false);
+				return;
+			}
+			setIsPickerOpen(false);
+			setPickerState(null);
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isPickerOpen]);
+
+	const selectOption = useCallback(
+		(option: BlockPickerOption) => {
+			if (!pickerState) {
+				setIsPickerOpen(false);
+				return;
+			}
+			setIsPickerOpen(false);
+			setPickerState(null);
+			editor.update(() => {
+				const node = $getNodeByKey(pickerState.paragraphKey);
+				if (!node || !$isParagraphNode(node)) return;
+
+				// Select into the existing paragraph so the insert replaces it
+				const firstChild = node.getFirstChild();
+				if ($isTextNode(firstChild)) {
+					firstChild.select();
+				}
+
+				option.insert({ editor, queryString });
+
+				// Clean up empty placeholder if the insert didn't use it
+				const latest = node.getLatest();
+				if ($isParagraphNode(latest)) {
+					const onlyChild = latest.getFirstChild();
+					if (
+						$isTextNode(onlyChild) &&
+						onlyChild.getTextContent().length === 0 &&
+						latest.getChildrenSize() === 1
+					) {
+						latest.remove();
+					}
+				}
+			});
+		},
+		[editor, pickerState, queryString],
+	);
+
+	// Keyboard navigation
+	useEffect(() => {
+		if (!isPickerOpen) return;
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (!filteredOptions.length) return;
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				setHighlightedIndex((i) =>
+					i + 1 >= filteredOptions.length ? 0 : i + 1,
+				);
+			} else if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				setHighlightedIndex((i) =>
+					i - 1 < 0 ? filteredOptions.length - 1 : i - 1,
+				);
+			} else if (event.key === 'Enter') {
+				event.preventDefault();
+				const option = filteredOptions[clampedIndex];
+				if (option) selectOption(option);
+			} else if (event.key === 'Escape') {
+				event.preventDefault();
+				setIsPickerOpen(false);
+				setPickerState(null);
 			}
 		};
-		document.addEventListener('mousedown', handleClick);
-		return () => document.removeEventListener('mousedown', handleClick);
-	}, [showBlockPicker]);
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [clampedIndex, isPickerOpen, filteredOptions, selectOption]);
+
+	function openPicker() {
+		if (!draggableElement || !editor) return;
+
+		let paragraphKey: NodeKey | null = null;
+
+		editor.update(() => {
+			const node = $getNearestNodeFromDOMNode(draggableElement);
+			if (!node) return;
+
+			const paragraph = $createParagraphNode();
+			const textNode = $createTextNode('');
+			paragraph.append(textNode);
+			node.insertAfter(paragraph);
+			textNode.select();
+			paragraphKey = paragraph.getKey();
+		});
+
+		if (!paragraphKey) return;
+
+		// Wait for DOM to update, then position picker at the new paragraph
+		requestAnimationFrame(() => {
+			const paragraphDom = editor.getElementByKey(paragraphKey!);
+			if (!paragraphDom) return;
+
+			const rect = paragraphDom.getBoundingClientRect();
+			const PICKER_HEIGHT = 300;
+			const spaceBelow = window.innerHeight - rect.bottom;
+			const showAbove = spaceBelow < PICKER_HEIGHT && rect.top > PICKER_HEIGHT;
+
+			setPickerPosition({
+				left: rect.left,
+				top: showAbove ? rect.top : rect.bottom + 4,
+				anchor: showAbove ? 'bottom' : 'top',
+			});
+			setPickerState({ paragraphKey: paragraphKey! });
+			setQueryString('');
+			setHighlightedIndex(0);
+			setIsPickerOpen(true);
+		});
+	}
 
 	return (
 		<>
+			{isPickerOpen && pickerPosition
+				? createPortal(
+						<div
+							ref={pickerRef}
+							className="fixed z-50"
+							style={{
+								left: pickerPosition.left,
+								...(pickerPosition.anchor === 'bottom'
+									? { bottom: window.innerHeight - pickerPosition.top }
+									: { top: pickerPosition.top }),
+							}}
+						>
+							<BlockPickerMenu
+								options={filteredOptions}
+								selectedIndex={clampedIndex}
+								onSelectOption={(option) => {
+									selectOption(option);
+								}}
+								onSetHighlightedIndex={setHighlightedIndex}
+								queryString={queryString}
+								onQueryChange={(q) => {
+									setQueryString(q);
+									setHighlightedIndex(0);
+								}}
+							/>
+						</div>,
+						document.body,
+					)
+				: null}
 			<DraggableBlockPlugin_EXPERIMENTAL
 				anchorElem={anchorElem}
 				menuRef={menuRef}
 				targetLineRef={targetLineRef}
-				onElementChanged={handleElementChanged}
 				menuComponent={
 					<div
 						ref={menuRef}
-						className="group flex items-center gap-0.5 rounded p-0.5 px-px opacity-0 absolute left-0 top-0 will-change-transform"
+						className={`${DRAGGABLE_BLOCK_MENU_CLASSNAME} group flex items-center gap-0.5 rounded p-0.5 px-px opacity-0 absolute left-0 top-0 will-change-transform`}
 					>
 						<button
-							ref={plusButtonRef}
 							type="button"
+							title="Click to add below, hold Alt/Ctrl to add above"
 							className="flex items-center justify-center w-6 h-6 p-0 border-none bg-transparent cursor-pointer opacity-30 rounded group-hover:opacity-60 hover:opacity-100! hover:bg-neutral-200"
 							aria-label="Add block"
-							onClick={handlePlusClick}
+							onClick={openPicker}
 						>
 							<Plus size={18} />
 						</button>
 						<div className="flex items-center justify-center w-6 h-6 opacity-30 cursor-grab active:cursor-grabbing rounded group-hover:opacity-60 hover:opacity-100! hover:bg-neutral-200">
 							<GripVertical size={18} />
 						</div>
-						{showBlockPicker && options.length > 0 && (
-							<div className="absolute top-full left-0 z-50 mt-1">
-								<BlockPickerMenu
-									options={options}
-									selectedIndex={selectedIndex}
-									onSelectOption={handleSelectOption}
-									onSetHighlightedIndex={setSelectedIndex}
-								/>
-							</div>
-						)}
 					</div>
 				}
 				targetLineComponent={
@@ -130,6 +257,7 @@ export default function EditorBlockControlPlugin({
 					/>
 				}
 				isOnMenu={isOnMenu}
+				onElementChanged={setDraggableElement}
 			/>
 		</>
 	);

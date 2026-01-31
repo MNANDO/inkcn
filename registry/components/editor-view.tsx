@@ -76,7 +76,7 @@ export function EditorView({
 						ErrorBoundary={LexicalErrorBoundary}
 					/>
 					{floatingAnchorElem && showToolbar && (
-						<EditorToolbarPlugin anchorElem={floatingAnchorElem} />
+						<EditorToolbarPlugin anchorElem={floatingAnchorElem} options={editor.blockPickerOptions} />
 					)}
 					{floatingAnchorElem && showBlockHandle && (
 						<EditorBlockControlPlugin
