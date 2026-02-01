@@ -245,13 +245,13 @@ export default function EditorBlockControlPlugin({
 						<button
 							type="button"
 							title="Click to add below, hold Alt/Ctrl to add above"
-							className="flex items-center justify-center w-6 h-6 p-0 border-none bg-transparent cursor-pointer opacity-30 rounded group-hover:opacity-60 hover:opacity-100! hover:bg-neutral-200"
+							className="flex items-center justify-center w-6 h-6 p-0 border-none bg-transparent cursor-pointer opacity-30 rounded text-foreground group-hover:opacity-60 hover:opacity-100! hover:bg-accent"
 							aria-label="Add block"
 							onClick={openPicker}
 						>
 							<Plus size={18} />
 						</button>
-						<div className="flex items-center justify-center w-6 h-6 opacity-30 cursor-grab active:cursor-grabbing rounded group-hover:opacity-60 hover:opacity-100! hover:bg-neutral-200">
+						<div className="flex items-center justify-center w-6 h-6 opacity-30 cursor-grab active:cursor-grabbing rounded text-foreground group-hover:opacity-60 hover:opacity-100! hover:bg-accent">
 							<GripVertical size={18} />
 						</div>
 					</div>
@@ -259,7 +259,7 @@ export default function EditorBlockControlPlugin({
 				targetLineComponent={
 					<div
 						ref={targetLineRef}
-						className="ib-block-control-target-line pointer-events-none bg-sky-400 h-1 absolute left-0 top-0 opacity-0 will-change-transform"
+						className="pointer-events-none bg-ring h-1 absolute left-0 top-0 opacity-0 will-change-transform"
 					/>
 				}
 				isOnMenu={isOnMenu}

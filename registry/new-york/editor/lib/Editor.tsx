@@ -3,6 +3,7 @@ import {
 	configExtension,
 	defineExtension,
 	EditorThemeClasses,
+	InitialEditorStateType,
 	Klass,
 	LexicalNode,
 } from 'lexical';
@@ -24,6 +25,7 @@ export interface EditorOptions {
 	nodes?: Array<Klass<LexicalNode>>;
 	extensions?: AnyLexicalExtension[];
 	blockPickerOptions?: BlockPickerOption[];
+	initialEditorState?: InitialEditorStateType;
 }
 
 export class Editor {
@@ -37,6 +39,7 @@ export class Editor {
 			extensions = [],
 			theme = {},
 			blockPickerOptions = [],
+			initialEditorState,
 		} = options;
 		this._blockPickerOptions = [
 			...baseBlockPickerOptions,
@@ -44,6 +47,7 @@ export class Editor {
 		];
 		this._lexicalExtension = defineExtension({
 			name,
+			$initialEditorState: initialEditorState,
 			nodes: [...baseNodes, ...nodes],
 			dependencies: [
 				HorizontalRuleExtension,

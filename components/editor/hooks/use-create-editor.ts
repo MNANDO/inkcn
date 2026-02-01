@@ -3,6 +3,7 @@
 import {
 	AnyLexicalExtension,
 	EditorThemeClasses,
+	InitialEditorStateType,
 	Klass,
 	LexicalNode,
 } from 'lexical';
@@ -14,6 +15,7 @@ export interface UseCreateEditorOptions {
 	theme?: EditorThemeClasses;
 	nodes?: Array<Klass<LexicalNode>>;
 	extensions?: AnyLexicalExtension[];
+	initialEditorState?: InitialEditorStateType;
 }
 
 export const useCreateEditor = (options: UseCreateEditorOptions = {}) => {

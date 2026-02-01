@@ -50,9 +50,9 @@ export function EditorView({
 			contentEditable={null}
 		>
 			<div
-				className={`relative font-normal leading-[1.7] text-black ${className ?? ''}`}
+				className={`relative font-normal leading-[1.7] text-foreground ${className ?? ''}`}
 			>
-				<div className="relative block bg-white">
+				<div className="relative block bg-background">
 					<RichTextPlugin
 						contentEditable={
 							<div className="relative z-0 flex min-h-37.5 max-w-full resize-y border-0 outline-none">
@@ -61,14 +61,14 @@ export function EditorView({
 									className="relative z-0 max-w-full flex-auto resize-y"
 								>
 									<ContentEditable
-										className={`relative min-h-37.5 resize-none px-2.5 py-3.75 text-[15px] caret-[#444] outline-none [tab-size:1] ${showBlockHandle ? 'ml-12' : ''}`}
+										className={`relative min-h-37.5 resize-none px-2.5 py-3.75 text-[15px] caret-foreground outline-none [tab-size:1] ${showBlockHandle ? 'ml-12' : ''}`}
 									/>
 								</div>
 							</div>
 						}
 						placeholder={
 							<div
-								className={`pointer-events-none absolute top-3.75 inline-block select-none overflow-hidden text-ellipsis text-[15px] text-[#999] ${showBlockHandle ? 'left-14.5' : 'left-2.5'}`}
+								className={`pointer-events-none absolute top-3.75 inline-block select-none overflow-hidden text-ellipsis text-[15px] text-muted-foreground ${showBlockHandle ? 'left-14.5' : 'left-2.5'}`}
 							>
 								{editorPlaceholder}
 							</div>
