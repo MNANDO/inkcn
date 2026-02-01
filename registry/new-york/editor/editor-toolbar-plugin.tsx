@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import EditorToolbar from './editor-toolbar';
-import type { BlockPickerOption } from '../lib/BlockPickerOption';
+import { BlockPickerOption } from './lib/BlockPickerOption';
 
 export default function EditorToolbarPlugin({
 	anchorElem = document.body,

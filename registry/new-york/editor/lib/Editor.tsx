@@ -15,8 +15,8 @@ import { CheckListExtension, ListExtension } from '@lexical/list';
 import { editorTheme } from './default-theme';
 import { ReactExtension } from '@lexical/react/ReactExtension';
 import type { BlockPickerOption } from './BlockPickerOption';
-import BlockPickerPlugin from '../components/editor-block-picker-plugin';
 import { baseBlockPickerOptions } from './base-block-picker-options';
+import BlockPickerPlugin from '../editor-block-picker-plugin';
 
 export interface EditorOptions {
 	name?: string;
@@ -38,7 +38,10 @@ export class Editor {
 			theme = {},
 			blockPickerOptions = [],
 		} = options;
-		this._blockPickerOptions = [...baseBlockPickerOptions, ...blockPickerOptions];
+		this._blockPickerOptions = [
+			...baseBlockPickerOptions,
+			...blockPickerOptions,
+		];
 		this._lexicalExtension = defineExtension({
 			name,
 			nodes: [...baseNodes, ...nodes],

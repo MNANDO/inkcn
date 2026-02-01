@@ -40,7 +40,10 @@ const DEFAULT_STATE: EditorToolbarState = {
 	blockType: 'paragraph',
 };
 
-function $getBlockType(editor: LexicalEditor, selection: ReturnType<typeof $getSelection>): string {
+function $getBlockType(
+	editor: LexicalEditor,
+	selection: ReturnType<typeof $getSelection>,
+): string {
 	if (!$isRangeSelection(selection)) return 'paragraph';
 
 	const anchorNode = selection.anchor.getNode();
@@ -53,8 +56,13 @@ function $getBlockType(editor: LexicalEditor, selection: ReturnType<typeof $getS
 	if (elementDOM === null) return 'paragraph';
 
 	if ($isListNode(element)) {
-		const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
-		const type = parentList ? parentList.getListType() : element.getListType();
+		const parentList = $getNearestNodeOfType<ListNode>(
+			anchorNode,
+			ListNode,
+		);
+		const type = parentList
+			? parentList.getListType()
+			: element.getListType();
 		if (type === 'number') return 'ordered-list';
 		if (type === 'check') return 'check-list';
 		return 'unordered-list';

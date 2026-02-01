@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 export function BlockPickerMenuItem({
 	index,
@@ -23,7 +23,9 @@ export function BlockPickerMenuItem({
 			tabIndex={-1}
 			className={cn(
 				'flex items-center gap-2 rounded-md px-2 py-1.5 cursor-pointer text-sm',
-				isSelected ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50',
+				isSelected
+					? 'bg-accent text-accent-foreground'
+					: 'hover:bg-accent/50',
 			)}
 			ref={setRefElement}
 			role="option"
@@ -32,7 +34,9 @@ export function BlockPickerMenuItem({
 			onMouseEnter={onMouseEnter}
 			onClick={onClick}
 		>
-			<span className="flex items-center justify-center size-5">{icon}</span>
+			<span className="flex items-center justify-center size-5">
+				{icon}
+			</span>
 			<span>{title}</span>
 		</li>
 	);

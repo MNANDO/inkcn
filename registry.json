@@ -19,72 +19,89 @@
             "registryDependencies": [
                 "toggle-group",
                 "button",
+                "input",
                 "dropdown-menu"
             ],
             "files": [
                 {
-                    "path": "registry/components/editor-view.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/editor-view.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/editor-view.tsx"
                 },
                 {
-                    "path": "registry/components/editor-toolbar.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/editor-toolbar.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/editor-toolbar.tsx"
                 },
                 {
-                    "path": "registry/components/editor-toolbar-plugin.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/editor-toolbar-plugin.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/editor-toolbar-plugin.tsx"
                 },
                 {
-                    "path": "registry/components/editor-block-control-plugin.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/editor-block-control-plugin.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/editor-block-control-plugin.tsx"
                 },
                 {
-                    "path": "registry/components/editor-block-picker-plugin.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/editor-block-picker-plugin.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/editor-block-picker-plugin.tsx"
                 },
                 {
-                    "path": "registry/components/block-picker-menu.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/block-picker-menu.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/block-picker-menu.tsx"
                 },
                 {
-                    "path": "registry/components/block-picker-menu-item.tsx",
-                    "type": "registry:component"
+                    "path": "registry/new-york/editor/block-picker-menu-item.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/block-picker-menu-item.tsx"
                 },
                 {
-                    "path": "registry/hooks/use-editor-toolbar.ts",
-                    "type": "registry:hook"
+                    "path": "registry/new-york/editor/hooks/use-editor-toolbar.ts",
+                    "type": "registry:hook",
+                    "target": "components/editor/hooks/use-editor-toolbar.ts"
                 },
                 {
-                    "path": "registry/hooks/use-create-editor.ts",
-                    "type": "registry:hook"
+                    "path": "registry/new-york/editor/hooks/use-create-editor.ts",
+                    "type": "registry:hook",
+                    "target": "components/editor/hooks/use-create-editor.ts"
                 },
                 {
-                    "path": "registry/lib/editor-utils.ts",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/editor-utils.ts",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/editor-utils.ts"
                 },
                 {
-                    "path": "registry/lib/Editor.tsx",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/Editor.tsx",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/Editor.tsx"
                 },
                 {
-                    "path": "registry/lib/base-nodes.ts",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/base-nodes.ts",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/base-nodes.ts"
                 },
                 {
-                    "path": "registry/lib/default-theme.ts",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/default-theme.ts",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/default-theme.ts"
                 },
                 {
-                    "path": "registry/lib/editor-theme.css",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/editor-theme.css",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/editor-theme.css"
                 },
                 {
-                    "path": "registry/lib/base-block-picker-options.tsx",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/base-block-picker-options.tsx",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/base-block-picker-options.tsx"
                 },
                 {
-                    "path": "registry/lib/BlockPickerOption.ts",
-                    "type": "registry:lib"
+                    "path": "registry/new-york/editor/lib/BlockPickerOption.ts",
+                    "type": "registry:lib",
+                    "target": "components/editor/lib/BlockPickerOption.ts"
                 }
             ]
         }

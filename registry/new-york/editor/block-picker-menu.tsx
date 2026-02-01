@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 
-import { BlockPickerOption } from '../lib/BlockPickerOption';
+import { BlockPickerOption } from './lib/BlockPickerOption';
 import { Input } from '@/components/ui/input';
 import { BlockPickerMenuItem } from './block-picker-menu-item';
 

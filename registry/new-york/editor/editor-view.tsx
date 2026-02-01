@@ -9,7 +9,7 @@ import { ReactNode, useState } from 'react';
 import EditorToolbarPlugin from './editor-toolbar-plugin';
 import EditorBlockControlPlugin from './editor-block-control-plugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { Editor } from '../lib/Editor';
+import { Editor } from './lib/Editor';
 
 export function EditorView({
 	editor,
@@ -76,7 +76,10 @@ export function EditorView({
 						ErrorBoundary={LexicalErrorBoundary}
 					/>
 					{floatingAnchorElem && showToolbar && (
-						<EditorToolbarPlugin anchorElem={floatingAnchorElem} options={editor.blockPickerOptions} />
+						<EditorToolbarPlugin
+							anchorElem={floatingAnchorElem}
+							options={editor.blockPickerOptions}
+						/>
 					)}
 					{floatingAnchorElem && showBlockHandle && (
 						<EditorBlockControlPlugin

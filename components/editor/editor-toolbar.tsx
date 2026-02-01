@@ -22,9 +22,8 @@ import {
 	ChevronDown,
 } from 'lucide-react';
 
-import { getDOMRangeRect, setFloatingElemPosition } from '../lib/editor-utils';
+import { getDOMRangeRect, setFloatingElemPosition } from './lib/editor-utils';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useEditorToolbar } from '../hooks/use-editor-toolbar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -32,7 +31,8 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import type { BlockPickerOption } from '../lib/BlockPickerOption';
+import type { BlockPickerOption } from './lib/BlockPickerOption';
+import { useEditorToolbar } from './hooks/use-editor-toolbar';
 
 export default function EditorToolbar({
 	editor,

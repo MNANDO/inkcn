@@ -1,8 +1,8 @@
 'use client';
 
-import { EditorView } from '@/components/editor-view';
+import { EditorView } from '@/components/editor/editor-view';
+import { useCreateEditor } from '@/components/editor/hooks/use-create-editor';
 import { Button } from '@/components/ui/button';
-import { useCreateEditor } from '@/hooks/use-create-editor';
 
 export default function Home() {
 	const editor = useCreateEditor();

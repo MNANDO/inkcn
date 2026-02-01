@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GripVertical, Plus } from 'lucide-react';
 
-import { BlockPickerOption } from '../lib/BlockPickerOption';
+import { BlockPickerOption } from './lib/BlockPickerOption';
 import { BlockPickerMenu } from './block-picker-menu';
 
 const DRAGGABLE_BLOCK_MENU_CLASSNAME = 'draggable-block-menu';
@@ -65,9 +65,10 @@ export default function EditorBlockControlPlugin({
 		);
 	}, [options, queryString]);
 
-	const clampedIndex = filteredOptions.length > 0
-		? Math.min(highlightedIndex, filteredOptions.length - 1)
-		: 0;
+	const clampedIndex =
+		filteredOptions.length > 0
+			? Math.min(highlightedIndex, filteredOptions.length - 1)
+			: 0;
 
 	// Close on click outside
 	useEffect(() => {
@@ -182,7 +183,8 @@ export default function EditorBlockControlPlugin({
 			const rect = paragraphDom.getBoundingClientRect();
 			const PICKER_HEIGHT = 300;
 			const spaceBelow = window.innerHeight - rect.bottom;
-			const showAbove = spaceBelow < PICKER_HEIGHT && rect.top > PICKER_HEIGHT;
+			const showAbove =
+				spaceBelow < PICKER_HEIGHT && rect.top > PICKER_HEIGHT;
 
 			setPickerPosition({
 				left: rect.left,
@@ -206,7 +208,11 @@ export default function EditorBlockControlPlugin({
 							style={{
 								left: pickerPosition.left,
 								...(pickerPosition.anchor === 'bottom'
-									? { bottom: window.innerHeight - pickerPosition.top }
+									? {
+											bottom:
+												window.innerHeight -
+												pickerPosition.top,
+										}
 									: { top: pickerPosition.top }),
 							}}
 						>
