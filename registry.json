@@ -64,6 +64,16 @@
                     "target": "components/editor/hooks/use-editor-toolbar.ts"
                 },
                 {
+                    "path": "registry/new-york/editor/hooks/use-floating-toolbar-position.ts",
+                    "type": "registry:hook",
+                    "target": "components/editor/hooks/use-floating-toolbar-position.ts"
+                },
+                {
+                    "path": "registry/new-york/editor/hooks/use-text-format-toggle.ts",
+                    "type": "registry:hook",
+                    "target": "components/editor/hooks/use-text-format-toggle.ts"
+                },
+                {
                     "path": "registry/new-york/editor/hooks/use-create-editor.ts",
                     "type": "registry:hook",
                     "target": "components/editor/hooks/use-create-editor.ts"

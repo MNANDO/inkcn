@@ -1,17 +1,7 @@
 'use client';
 
-import { mergeRegister } from '@lexical/utils';
-import {
-	$getSelection,
-	$isRangeSelection,
-	COMMAND_PRIORITY_LOW,
-	FORMAT_TEXT_COMMAND,
-	getDOMSelection,
-	LexicalEditor,
-	SELECTION_CHANGE_COMMAND,
-	TextFormatType,
-} from 'lexical';
-import { JSX, useCallback, useEffect, useRef } from 'react';
+import { $getSelection, $isRangeSelection, LexicalEditor } from 'lexical';
+import { JSX } from 'react';
 import { createPortal } from 'react-dom';
 
 import {
@@ -22,7 +12,7 @@ import {
 	ChevronDown,
 } from 'lucide-react';
 
-import { getDOMRangeRect, setFloatingElemPosition } from './lib/editor-utils';
+import { filterBlockOptions } from './lib/editor-utils';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
 	DropdownMenu,
@@ -33,6 +23,8 @@ import {
 import { Button } from '@/components/ui/button';
 import type { BlockPickerOption } from './lib/BlockPickerOption';
 import { useEditorToolbar } from './hooks/use-editor-toolbar';
+import { useFloatingToolbarPosition } from './hooks/use-floating-toolbar-position';
+import { useTextFormatToggle } from './hooks/use-text-format-toggle';
 
 export default function EditorToolbar({
 	editor,
@@ -44,184 +36,14 @@ export default function EditorToolbar({
 	options: BlockPickerOption[];
 }): JSX.Element | null {
 	const state = useEditorToolbar(editor);
-	const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
-
-	const { isBold, isItalic, isUnderline, isStrikethrough, blockType } = state;
-
-	const currentBlock = options.find((opt) => opt.key === blockType);
-
-	// Callback ref to position toolbar immediately when element is created
-	const setPopupRef = useCallback(
-		(elem: HTMLDivElement | null) => {
-			popupCharStylesEditorRef.current = elem;
-			if (elem) {
-				// Position immediately when ref is set
-				editor.getEditorState().read(() => {
-					const selection = $getSelection();
-					const nativeSelection = getDOMSelection(editor._window);
-					const rootElement = editor.getRootElement();
-
-					if (
-						selection !== null &&
-						nativeSelection !== null &&
-						!nativeSelection.isCollapsed &&
-						rootElement !== null &&
-						rootElement.contains(nativeSelection.anchorNode)
-					) {
-						const rangeRect = getDOMRangeRect(
-							nativeSelection,
-							rootElement,
-						);
-						setFloatingElemPosition(
-							rangeRect,
-							elem,
-							anchorElem,
-							false,
-						);
-					}
-				});
-			}
-		},
-		[editor, anchorElem],
-	);
-
-	function mouseMoveListener(e: MouseEvent) {
-		if (
-			popupCharStylesEditorRef.current &&
-			(e.buttons === 1 || e.buttons === 2)
-		) {
-			if (
-				popupCharStylesEditorRef.current.style.pointerEvents !== 'none'
-			) {
-				const elementUnderMouse = document.elementFromPoint(
-					e.clientX,
-					e.clientY,
-				);
-				if (
-					elementUnderMouse &&
-					!popupCharStylesEditorRef.current.contains(
-						elementUnderMouse,
-					)
-				) {
-					popupCharStylesEditorRef.current.style.pointerEvents =
-						'none';
-				}
-			}
-		}
-	}
-
-	function mouseUpListener() {
-		if (!popupCharStylesEditorRef.current) return;
-		if (popupCharStylesEditorRef.current.style.pointerEvents !== 'auto') {
-			popupCharStylesEditorRef.current.style.pointerEvents = 'auto';
-		}
-	}
-
-	useEffect(() => {
-		if (!popupCharStylesEditorRef.current) return;
-
-		document.addEventListener('mousemove', mouseMoveListener);
-		document.addEventListener('mouseup', mouseUpListener);
-
-		return () => {
-			document.removeEventListener('mousemove', mouseMoveListener);
-			document.removeEventListener('mouseup', mouseUpListener);
-		};
-	}, []);
-
-	const $updateTextFormatEditorToolbar = useCallback(() => {
-		const selection = $getSelection();
-		const popupElem = popupCharStylesEditorRef.current;
-		const nativeSelection = getDOMSelection(editor._window);
-
-		if (popupElem === null) return;
-
-		const rootElement = editor.getRootElement();
-		if (
-			selection !== null &&
-			nativeSelection !== null &&
-			!nativeSelection.isCollapsed &&
-			rootElement !== null &&
-			rootElement.contains(nativeSelection.anchorNode)
-		) {
-			const rangeRect = getDOMRangeRect(nativeSelection, rootElement);
-			setFloatingElemPosition(rangeRect, popupElem, anchorElem, false);
-		}
-	}, [editor, anchorElem]);
-
-	useEffect(() => {
-		const scrollerElem = anchorElem.parentElement;
-
-		const update = () => {
-			editor.getEditorState().read(() => {
-				$updateTextFormatEditorToolbar();
-			});
-		};
-
-		window.addEventListener('resize', update);
-		scrollerElem?.addEventListener('scroll', update);
-
-		return () => {
-			window.removeEventListener('resize', update);
-			scrollerElem?.removeEventListener('scroll', update);
-		};
-	}, [editor, $updateTextFormatEditorToolbar, anchorElem]);
-
-	useEffect(() => {
-		editor.getEditorState().read(() => {
-			$updateTextFormatEditorToolbar();
-		});
-
-		return mergeRegister(
-			editor.registerUpdateListener(({ editorState }) => {
-				editorState.read(() => {
-					$updateTextFormatEditorToolbar();
-				});
-			}),
-			editor.registerCommand(
-				SELECTION_CHANGE_COMMAND,
-				() => {
-					$updateTextFormatEditorToolbar();
-					return false;
-				},
-				COMMAND_PRIORITY_LOW,
-			),
-		);
-	}, [editor, $updateTextFormatEditorToolbar]);
+	const { setPopupRef } = useFloatingToolbarPosition({ editor, anchorElem });
+	const { handleValueChange: onTextStyleToggle, currentValues } =
+		useTextFormatToggle(editor, state);
 
 	if (!state.isVisible) return null;
 
-	const handleValueChange = (values: string[]) => {
-		const formats: TextFormatType[] = [
-			'bold',
-			'italic',
-			'underline',
-			'strikethrough',
-		];
-		formats.forEach((format) => {
-			const isActive =
-				format === 'bold'
-					? isBold
-					: format === 'italic'
-						? isItalic
-						: format === 'underline'
-							? isUnderline
-							: isStrikethrough;
-			const shouldBeActive = values.includes(format);
-			if (isActive !== shouldBeActive) {
-				editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
-			}
-		});
-	};
-
-	// Filter to only block-type options (exclude alignment, dividers)
-	const blockOptions = options.filter(
-		(opt) =>
-			opt.category === 'basic' ||
-			opt.category === 'headings' ||
-			opt.category === 'lists' ||
-			opt.category === 'quotes',
-	);
+	const currentBlock = options.find((opt) => opt.key === state.blockType);
+	const blockOptions = filterBlockOptions(options);
 
 	return createPortal(
 		<div
@@ -254,7 +76,9 @@ export default function EditorToolbar({
 								});
 							}}
 							className={
-								blockType === option.key ? 'bg-accent' : ''
+								state.blockType === option.key
+									? 'bg-accent'
+									: ''
 							}
 						>
 							<span className="mr-2 h-4 w-4">{option.icon}</span>
@@ -267,13 +91,8 @@ export default function EditorToolbar({
 				<ToggleGroup
 					type="multiple"
 					spacing={1}
-					value={[
-						...(isBold ? ['bold'] : []),
-						...(isItalic ? ['italic'] : []),
-						...(isUnderline ? ['underline'] : []),
-						...(isStrikethrough ? ['strikethrough'] : []),
-					]}
-					onValueChange={handleValueChange}
+					value={currentValues}
+					onValueChange={onTextStyleToggle}
 				>
 					<ToggleGroupItem
 						value="bold"

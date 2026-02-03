@@ -1,5 +1,6 @@
 import { $isAtNodeEnd } from '@lexical/selection';
 import { ElementNode, RangeSelection, TextNode } from 'lexical';
+import type { BlockPickerOption, BlockCategory } from './BlockPickerOption';
 
 const VERTICAL_GAP = 10;
 const HORIZONTAL_OFFSET = 5;
@@ -111,4 +112,19 @@ export function getDOMRangeRect(
 	}
 
 	return rect;
+}
+
+const TOOLBAR_BLOCK_CATEGORIES: BlockCategory[] = [
+	'basic',
+	'headings',
+	'lists',
+	'quotes',
+];
+
+export function filterBlockOptions(
+	options: BlockPickerOption[],
+): BlockPickerOption[] {
+	return options.filter((opt) =>
+		TOOLBAR_BLOCK_CATEGORIES.includes(opt.category),
+	);
 }
