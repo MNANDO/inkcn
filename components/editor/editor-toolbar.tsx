@@ -10,6 +10,7 @@ import {
 	Underline,
 	Strikethrough,
 	ChevronDown,
+	Baseline,
 } from 'lucide-react';
 
 import { filterBlockOptions } from './lib/editor-utils';
@@ -50,6 +51,7 @@ export default function EditorToolbar({
 			ref={setPopupRef}
 			className="absolute z-50 flex items-center gap-0.5 rounded-md border bg-popover p-1 shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-150"
 		>
+			{/* Block picker dropdown */}
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost">
@@ -87,46 +89,61 @@ export default function EditorToolbar({
 					))}
 				</DropdownMenuContent>
 			</DropdownMenu>
-			{editor.isEditable() && (
-				<ToggleGroup
-					type="multiple"
-					spacing={1}
-					value={currentValues}
-					onValueChange={onTextStyleToggle}
+
+			{/* Text format toggles */}
+			<ToggleGroup
+				type="multiple"
+				spacing={1}
+				value={currentValues}
+				onValueChange={onTextStyleToggle}
+			>
+				<ToggleGroupItem
+					value="bold"
+					title="Bold"
+					aria-label="Format text as bold"
 				>
-					<ToggleGroupItem
-						value="bold"
-						title="Bold"
-						aria-label="Format text as bold"
-					>
-						<Bold className="h-2 w-2" />
-					</ToggleGroupItem>
+					<Bold className="h-2 w-2" />
+				</ToggleGroupItem>
 
-					<ToggleGroupItem
-						value="italic"
-						title="Italic"
-						aria-label="Format text as italics"
-					>
-						<Italic className="h-2 w-2" />
-					</ToggleGroupItem>
+				<ToggleGroupItem
+					value="italic"
+					title="Italic"
+					aria-label="Format text as italics"
+				>
+					<Italic className="h-2 w-2" />
+				</ToggleGroupItem>
 
-					<ToggleGroupItem
-						value="underline"
-						title="Underline"
-						aria-label="Format text to underlined"
-					>
-						<Underline className="h-2 w-2" />
-					</ToggleGroupItem>
+				<ToggleGroupItem
+					value="underline"
+					title="Underline"
+					aria-label="Format text to underlined"
+				>
+					<Underline className="h-2 w-2" />
+				</ToggleGroupItem>
 
-					<ToggleGroupItem
-						value="strikethrough"
-						title="Strikethrough"
-						aria-label="Format text with a strikethrough"
+				<ToggleGroupItem
+					value="strikethrough"
+					title="Strikethrough"
+					aria-label="Format text with a strikethrough"
+				>
+					<Strikethrough className="h-2 w-2" />
+				</ToggleGroupItem>
+			</ToggleGroup>
+
+			{/* Color picker dropdown */}
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						style={state.bgColor ? { backgroundColor: state.bgColor } : undefined}
 					>
-						<Strikethrough className="h-2 w-2" />
-					</ToggleGroupItem>
-				</ToggleGroup>
-			)}
+						<Baseline
+							className="h-3 w-3"
+							style={state.fontColor ? { color: state.fontColor } : undefined}
+						/>
+					</Button>
+				</DropdownMenuTrigger>
+			</DropdownMenu>
 		</div>,
 		anchorElem,
 	);

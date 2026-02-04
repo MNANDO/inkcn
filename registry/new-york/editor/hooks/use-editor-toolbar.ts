@@ -9,6 +9,7 @@ import {
 import { $isHeadingNode, $isQuoteNode } from '@lexical/rich-text';
 import { $isListNode, ListNode } from '@lexical/list';
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
+import { $getSelectionStyleValueForProperty } from '@lexical/selection';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedNode } from '../lib/editor-utils';
 
@@ -24,6 +25,8 @@ export type EditorToolbarState = {
 	isSubscript: boolean;
 	isSuperscript: boolean;
 	blockType: string;
+	fontColor: string;
+	bgColor: string;
 };
 
 const DEFAULT_STATE: EditorToolbarState = {
@@ -38,6 +41,8 @@ const DEFAULT_STATE: EditorToolbarState = {
 	isSubscript: false,
 	isSuperscript: false,
 	blockType: 'paragraph',
+	fontColor: '',
+	bgColor: '',
 };
 
 function $getBlockType(
@@ -137,6 +142,8 @@ export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 					isSubscript: selection.hasFormat('subscript'),
 					isSuperscript: selection.hasFormat('superscript'),
 					blockType: $getBlockType(editor, selection),
+					fontColor: $getSelectionStyleValueForProperty(selection, 'color', ''),
+					bgColor: $getSelectionStyleValueForProperty(selection, 'background-color', ''),
 				});
 			});
 		},
