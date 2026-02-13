@@ -62,15 +62,16 @@ export function EditorView({
 								>
 									<ContentEditable
 										className={`relative min-h-37.5 resize-none px-2.5 py-3.75 text-[15px] caret-foreground outline-none [tab-size:1] ${showBlockHandle ? 'ml-12' : ''}`}
+										aria-placeholder={editorPlaceholder}
+										placeholder={
+											<div
+												className={`pointer-events-none absolute top-3.75 inline-block select-none overflow-hidden text-ellipsis text-[15px] text-muted-foreground ${showBlockHandle ? 'left-14.5' : 'left-2.5'}`}
+											>
+												{editorPlaceholder}
+											</div>
+										}
 									/>
 								</div>
-							</div>
-						}
-						placeholder={
-							<div
-								className={`pointer-events-none absolute top-3.75 inline-block select-none overflow-hidden text-ellipsis text-[15px] text-muted-foreground ${showBlockHandle ? 'left-14.5' : 'left-2.5'}`}
-							>
-								{editorPlaceholder}
 							</div>
 						}
 						ErrorBoundary={LexicalErrorBoundary}

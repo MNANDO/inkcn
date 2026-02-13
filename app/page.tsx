@@ -1,29 +1,12 @@
-'use client';
-
-import { useState } from 'react';
+import EditorDemo from '@/components/editor-demo';
+import InstallCommand from '@/components/install-command';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useTheme } from 'next-themes';
-import dynamic from 'next/dynamic';
-
-const EditorDemo = dynamic(() => import('@/components/editor-demo'), {
-	ssr: false,
-});
 
 export default function Home() {
-	const { theme, setTheme } = useTheme();
-	const [copied, setCopied] = useState(false);
-	const installCommand =
-		'npx shadcn add http://inkcn.vercel.app/r/editor.json';
-
-	const handleCopy = () => {
-		navigator.clipboard.writeText(installCommand);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
-	};
-
 	return (
-		<div className="min-h-screen bg-background">
+		<div className="min-h-screen bg-background" role="document">
 			{/* Top Nav */}
 			<nav className="flex items-center justify-between px-6 py-4 mx-auto max-w-4xl">
 				<span className="font-semibold text-sm">Inkcn</span>
@@ -45,54 +28,11 @@ export default function Home() {
 							</svg>
 						</a>
 					</Button>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() =>
-							setTheme(theme === 'dark' ? 'light' : 'dark')
-						}
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="block dark:hidden"
-						>
-							<circle cx="12" cy="12" r="4" />
-							<path d="M12 2v2" />
-							<path d="M12 20v2" />
-							<path d="m4.93 4.93 1.41 1.41" />
-							<path d="m17.66 17.66 1.41 1.41" />
-							<path d="M2 12h2" />
-							<path d="M20 12h2" />
-							<path d="m6.34 17.66-1.41 1.41" />
-							<path d="m19.07 4.93-1.41 1.41" />
-						</svg>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="hidden dark:block"
-						>
-							<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-						</svg>
-					</Button>
+					<ThemeToggle />
 				</div>
 			</nav>
 
-			<div className="mx-auto max-w-4xl px-6 pb-16 pt-12">
+			<main className="mx-auto max-w-4xl px-6 pb-16 pt-12">
 				{/* Header */}
 				<header className="text-center mb-8">
 					<h1 className="text-4xl font-bold tracking-tight mb-2">
@@ -119,56 +59,9 @@ export default function Home() {
 					<p className="text-sm text-muted-foreground mb-3">
 						Add to your project
 					</p>
-					<div className="inline-flex items-center gap-2 rounded-lg border bg-muted/50 px-4 py-2 font-mono text-sm">
-						<span className="text-muted-foreground">$</span>
-						<code>{installCommand}</code>
-						<Button
-							variant="ghost"
-							size="icon-xs"
-							className="ml-2"
-							onClick={handleCopy}
-						>
-							{copied ? (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<path d="M20 6 9 17l-5-5" />
-								</svg>
-							) : (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<rect
-										width="14"
-										height="14"
-										x="8"
-										y="8"
-										rx="2"
-										ry="2"
-									/>
-									<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-								</svg>
-							)}
-						</Button>
-					</div>
+					<InstallCommand />
 				</div>
-			</div>
+			</main>
 		</div>
 	);
 }
