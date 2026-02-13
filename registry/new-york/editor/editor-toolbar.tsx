@@ -14,11 +14,18 @@ import {
 } from 'lucide-react';
 
 import { filterBlockOptions } from './lib/editor-utils';
+import {
+	TEXT_COLORS,
+	BACKGROUND_COLORS,
+	ColorOption,
+} from './lib/color-options';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
+	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
@@ -26,6 +33,7 @@ import type { BlockPickerOption } from './lib/BlockPickerOption';
 import { useEditorToolbar } from './hooks/use-editor-toolbar';
 import { useFloatingToolbarPosition } from './hooks/use-floating-toolbar-position';
 import { useTextFormatToggle } from './hooks/use-text-format-toggle';
+import { useColorFormat } from './hooks/use-color-format';
 
 export default function EditorToolbar({
 	editor,
@@ -40,6 +48,7 @@ export default function EditorToolbar({
 	const { setPopupRef } = useFloatingToolbarPosition({ editor, anchorElem });
 	const { handleValueChange: onTextStyleToggle, currentValues } =
 		useTextFormatToggle(editor, state);
+	const { applyFontColor, applyBgColor } = useColorFormat(editor);
 
 	if (!state.isVisible) return null;
 
@@ -51,6 +60,7 @@ export default function EditorToolbar({
 			ref={setPopupRef}
 			className="absolute z-50 flex items-center gap-0.5 rounded-md border bg-popover p-1 shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-150"
 		>
+			{/* Block picker dropdown */}
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost">
@@ -88,6 +98,8 @@ export default function EditorToolbar({
 					))}
 				</DropdownMenuContent>
 			</DropdownMenu>
+
+			{/* Text format toggles */}
 			<ToggleGroup
 				type="multiple"
 				spacing={1}
@@ -132,16 +144,68 @@ export default function EditorToolbar({
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="ghost"
-						style={state.bgColor ? { backgroundColor: state.bgColor } : undefined}
+						style={
+							state.bgColor
+								? { backgroundColor: state.bgColor }
+								: undefined
+						}
 					>
 						<Baseline
 							className="h-3 w-3"
-							style={state.fontColor ? { color: state.fontColor } : undefined}
+							style={
+								state.fontColor
+									? { color: state.fontColor }
+									: undefined
+							}
 						/>
 					</Button>
 				</DropdownMenuTrigger>
+				<DropdownMenuContent>
+					<ColorMenuGroup
+						label="Text"
+						colors={TEXT_COLORS}
+						activeValue={state.fontColor}
+						onSelect={applyFontColor}
+					/>
+					<ColorMenuGroup
+						label="Background"
+						colors={BACKGROUND_COLORS}
+						activeValue={state.bgColor}
+						onSelect={applyBgColor}
+					/>
+				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>,
 		anchorElem,
+	);
+}
+
+function ColorMenuGroup({
+	label,
+	colors,
+	activeValue,
+	onSelect,
+}: {
+	label: string;
+	colors: ColorOption[];
+	activeValue: string;
+	onSelect: (color: string | null) => void;
+}) {
+	return (
+		<DropdownMenuGroup>
+			<DropdownMenuLabel>{label}</DropdownMenuLabel>
+			{colors.map((color) => (
+				<DropdownMenuItem
+					key={color.key}
+					onSelect={() => onSelect(color.value)}
+					className={
+						(color.value ?? '') === activeValue ? 'bg-accent' : ''
+					}
+				>
+					<Baseline className={`h-3 w-3 ${color.iconClassName}`} />
+					{color.label}
+				</DropdownMenuItem>
+			))}
+		</DropdownMenuGroup>
 	);
 }
