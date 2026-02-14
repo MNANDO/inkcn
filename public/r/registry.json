@@ -10,6 +10,7 @@
             "description": "A Notion style rich text editor created with Lexical.",
             "dependencies": [
                 "@lexical/extension",
+                "@lexical/history",
                 "@lexical/list",
                 "@lexical/react",
                 "@lexical/rich-text",
@@ -62,6 +63,21 @@
                     "path": "registry/new-york/editor/block-picker-menu-item.tsx",
                     "type": "registry:component",
                     "target": "components/editor/block-picker-menu-item.tsx"
+                },
+                {
+                    "path": "registry/new-york/editor/decorators/image-decorator.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/decorators/image-decorator.tsx"
+                },
+                {
+                    "path": "registry/new-york/editor/nodes/image-node.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/nodes/image-node.tsx"
+                },
+                {
+                    "path": "registry/new-york/editor/image-plugin.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/image-plugin.tsx"
                 },
                 {
                     "path": "registry/new-york/editor/hooks/use-editor-toolbar.ts",

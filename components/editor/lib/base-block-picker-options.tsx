@@ -5,6 +5,7 @@ import {
 	Heading1,
 	Heading2,
 	Heading3,
+	Image,
 	List,
 	ListChecks,
 	ListOrdered,
@@ -26,6 +27,7 @@ import {
 	INSERT_UNORDERED_LIST_COMMAND,
 } from '@lexical/list';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
+import { INSERT_IMAGE_COMMAND } from '../image-plugin';
 import { BlockPickerOption } from './BlockPickerOption';
 
 export const baseBlockPickerOptions: BlockPickerOption[] = [
@@ -172,6 +174,23 @@ export const baseBlockPickerOptions: BlockPickerOption[] = [
 		category: 'alignment',
 		insert: ({ editor }) => {
 			editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+		},
+	}),
+	new BlockPickerOption({
+		id: 'image',
+		title: 'Image',
+		// eslint-disable-next-line jsx-a11y/alt-text
+		icon: <Image />,
+		keywords: ['image', 'img', 'picture', 'photo'],
+		category: 'advanced',
+		insert: ({ editor }) => {
+			const src = window.prompt('Enter image URL');
+			if (src) {
+				editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+					src,
+					altText: '',
+				});
+			}
 		},
 	}),
 ];

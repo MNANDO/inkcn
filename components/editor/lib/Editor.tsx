@@ -7,6 +7,7 @@ import {
 	Klass,
 	LexicalNode,
 } from 'lexical';
+import { HistoryExtension } from '@lexical/history';
 import { baseNodes } from './base-nodes';
 import {
 	HorizontalRuleExtension,
@@ -18,6 +19,8 @@ import { ReactExtension } from '@lexical/react/ReactExtension';
 import type { BlockPickerOption } from './BlockPickerOption';
 import { baseBlockPickerOptions } from './base-block-picker-options';
 import BlockPickerPlugin from '../editor-block-picker-plugin';
+import ImagePlugin from '../image-plugin';
+import { ImageNode } from '../nodes/ImageNode';
 
 export interface EditorOptions {
 	name?: string;
@@ -48,12 +51,13 @@ export class Editor {
 		this._lexicalExtension = defineExtension({
 			name,
 			$initialEditorState: initialEditorState,
-			nodes: [...baseNodes, ...nodes],
+			nodes: [...baseNodes, ImageNode, ...nodes],
 			dependencies: [
 				HorizontalRuleExtension,
 				ListExtension,
 				CheckListExtension,
 				TabIndentationExtension,
+				HistoryExtension,
 				configExtension(ReactExtension, {
 					contentEditable: null,
 					decorators: [
@@ -64,6 +68,7 @@ export class Editor {
 								...blockPickerOptions,
 							]}
 						/>,
+						<ImagePlugin key="image" />,
 					],
 				}),
 				...extensions,
