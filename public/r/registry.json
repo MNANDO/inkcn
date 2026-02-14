@@ -39,6 +39,11 @@
                     "target": "components/editor/editor-toolbar-plugin.tsx"
                 },
                 {
+                    "path": "registry/new-york/editor/readonly-plugin.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/readonly-plugin.tsx"
+                },
+                {
                     "path": "registry/new-york/editor/editor-block-control-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/editor-block-control-plugin.tsx"

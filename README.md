@@ -44,5 +44,6 @@ export default function MyEditor() {
 | `placeholder` | `string` | `"Enter some text or type '/' for commands"` | Placeholder text |
 | `showBlockHandle` | `boolean` | `true` | Show the block drag handle |
 | `showToolbar` | `boolean` | `true` | Show the floating toolbar |
+| `readOnly` | `boolean` | `false` | Disable editing and hide toolbar/block handle |
 | `onChange` | `(editorState, editor, tags) => void` | — | Change callback |
 | `children` | `ReactNode` | — | Additional Lexical plugins |

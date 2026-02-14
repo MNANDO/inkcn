@@ -5,11 +5,27 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { LexicalExtensionComposer } from '@lexical/react/LexicalExtensionComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EditorState, LexicalEditor } from 'lexical';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import EditorToolbarPlugin from './editor-toolbar-plugin';
 import EditorBlockControlPlugin from './editor-block-control-plugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { Editor } from './lib/Editor';
+import ReadOnlyPlugin from './readonly-plugin';
+
+interface EditorViewProps {
+	editor: Editor;
+	className?: string;
+	placeholder?: string;
+	showBlockHandle?: boolean;
+	showToolbar?: boolean;
+	readOnly?: boolean;
+	onChange?: (
+		editorState: EditorState,
+		editor: LexicalEditor,
+		tags: Set<string>,
+	) => void;
+	children?: React.ReactNode;
+}
 
 export function EditorView({
 	editor,
@@ -17,21 +33,10 @@ export function EditorView({
 	placeholder,
 	showBlockHandle = true,
 	showToolbar = true,
+	readOnly = false,
 	onChange,
 	children,
-}: {
-	editor: Editor;
-	className?: string;
-	placeholder?: string;
-	showBlockHandle?: boolean;
-	showToolbar?: boolean;
-	onChange?: (
-		editorState: EditorState,
-		editor: LexicalEditor,
-		tags: Set<string>,
-	) => void;
-	children?: ReactNode;
-}) {
+}: EditorViewProps) {
 	const [floatingAnchorElem, setFloatingAnchorElem] =
 		useState<HTMLDivElement | null>(null);
 
@@ -63,20 +68,27 @@ export function EditorView({
 									<ContentEditable
 										className={`relative min-h-37.5 resize-none px-2.5 py-3.75 text-[15px] caret-foreground outline-none [tab-size:1] ${showBlockHandle ? 'ml-12' : ''}`}
 										aria-placeholder={editorPlaceholder}
-										placeholder={() => null}
+										placeholder={
+											<div
+												className={`pointer-events-none absolute top-3.75 inline-block select-none overflow-hidden text-ellipsis text-[15px] text-muted-foreground ${showBlockHandle ? 'left-14.5' : 'left-2.5'}`}
+											>
+												{editorPlaceholder}
+											</div>
+										}
 									/>
 								</div>
 							</div>
 						}
 						ErrorBoundary={LexicalErrorBoundary}
 					/>
-					{floatingAnchorElem && showToolbar && (
+					{readOnly && <ReadOnlyPlugin />}
+					{floatingAnchorElem && showToolbar && !readOnly && (
 						<EditorToolbarPlugin
 							anchorElem={floatingAnchorElem}
 							options={editor.blockPickerOptions}
 						/>
 					)}
-					{floatingAnchorElem && showBlockHandle && (
+					{floatingAnchorElem && showBlockHandle && !readOnly && (
 						<EditorBlockControlPlugin
 							anchorElem={floatingAnchorElem}
 							options={editor.blockPickerOptions}

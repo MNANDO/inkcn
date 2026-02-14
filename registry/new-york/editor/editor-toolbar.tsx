@@ -35,15 +35,17 @@ import { useFloatingToolbarPosition } from './hooks/use-floating-toolbar-positio
 import { useTextFormatToggle } from './hooks/use-text-format-toggle';
 import { useColorFormat } from './hooks/use-color-format';
 
+interface EditorToolbarProps {
+	editor: LexicalEditor;
+	anchorElem: HTMLElement;
+	options: BlockPickerOption[];
+}
+
 export default function EditorToolbar({
 	editor,
 	anchorElem,
 	options,
-}: {
-	editor: LexicalEditor;
-	anchorElem: HTMLElement;
-	options: BlockPickerOption[];
-}): JSX.Element | null {
+}: EditorToolbarProps): JSX.Element | null {
 	const state = useEditorToolbar(editor);
 	const { setPopupRef } = useFloatingToolbarPosition({ editor, anchorElem });
 	const { handleValueChange: onTextStyleToggle, currentValues } =
