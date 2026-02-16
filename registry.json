@@ -80,64 +80,44 @@
                     "target": "components/editor/image-plugin.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/hooks/use-editor-toolbar.ts",
+                    "path": "hooks/use-create-editor.ts",
                     "type": "registry:hook",
-                    "target": "components/editor/hooks/use-editor-toolbar.ts"
+                    "target": "hooks/use-create-editor.ts"
                 },
                 {
-                    "path": "registry/new-york/editor/hooks/use-floating-toolbar-position.ts",
-                    "type": "registry:hook",
-                    "target": "components/editor/hooks/use-floating-toolbar-position.ts"
-                },
-                {
-                    "path": "registry/new-york/editor/hooks/use-text-format-toggle.ts",
-                    "type": "registry:hook",
-                    "target": "components/editor/hooks/use-text-format-toggle.ts"
-                },
-                {
-                    "path": "registry/new-york/editor/hooks/use-create-editor.ts",
-                    "type": "registry:hook",
-                    "target": "components/editor/hooks/use-create-editor.ts"
-                },
-                {
-                    "path": "registry/new-york/editor/hooks/use-color-format.ts",
-                    "type": "registry:hook",
-                    "target": "components/editor/hooks/use-color-format.ts"
-                },
-                {
-                    "path": "registry/new-york/editor/lib/Editor.tsx",
+                    "path": "lib/Editor.tsx",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/Editor.tsx"
+                    "target": "lib/Editor.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/base-nodes.ts",
+                    "path": "lib/base-nodes.ts",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/base-nodes.ts"
+                    "target": "lib/base-nodes.ts"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/default-theme.ts",
+                    "path": "lib/default-theme.ts",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/default-theme.ts"
+                    "target": "lib/default-theme.ts"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/editor-theme.css",
+                    "path": "lib/editor-theme.css",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/editor-theme.css"
+                    "target": "lib/editor-theme.css"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/base-block-picker-options.tsx",
+                    "path": "lib/base-block-picker-options.tsx",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/base-block-picker-options.tsx"
+                    "target": "lib/base-block-picker-options.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/BlockPickerOption.ts",
+                    "path": "lib/BlockPickerOption.ts",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/BlockPickerOption.ts"
+                    "target": "lib/BlockPickerOption.ts"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/color-options.ts",
+                    "path": "lib/color-options.ts",
                     "type": "registry:lib",
-                    "target": "components/editor/lib/color-options.ts"
+                    "target": "lib/color-options.ts"
                 }
             ]
         }

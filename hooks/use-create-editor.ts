@@ -8,7 +8,7 @@ import {
 	LexicalNode,
 } from 'lexical';
 import { useState } from 'react';
-import { Editor } from '../lib/Editor';
+import { Editor } from '@/lib/Editor';
 
 export interface UseCreateEditorOptions {
 	name?: string;

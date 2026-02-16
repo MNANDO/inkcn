@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GripVertical, Plus } from 'lucide-react';
 
-import { BlockPickerOption } from './lib/BlockPickerOption';
+import { BlockPickerOption } from '@/lib/BlockPickerOption';
 import { BlockPickerMenu } from './block-picker-menu';
 
 const DRAGGABLE_BLOCK_MENU_CLASSNAME = 'draggable-block-menu';

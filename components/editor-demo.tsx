@@ -1,7 +1,7 @@
 'use client';
 
-import { EditorView } from '@/components/editor/editor-view';
-import { useCreateEditor } from '@/components/editor/hooks/use-create-editor';
+import { useCreateEditor } from '@/hooks/use-create-editor';
+import { EditorView } from '@/registry/new-york/editor/editor-view';
 import { $createListItemNode, $createListNode } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';

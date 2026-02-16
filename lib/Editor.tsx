@@ -18,9 +18,9 @@ import { editorTheme } from './default-theme';
 import { ReactExtension } from '@lexical/react/ReactExtension';
 import type { BlockPickerOption } from './BlockPickerOption';
 import { baseBlockPickerOptions } from './base-block-picker-options';
-import BlockPickerPlugin from '../editor-block-picker-plugin';
-import ImagePlugin from '../image-plugin';
-import { ImageNode } from '../nodes/image-node';
+import { ImageNode } from '@/components/editor/nodes/image-node';
+import ImagePlugin from '@/components/editor/image-plugin';
+import BlockPickerPlugin from '@/components/editor/editor-block-picker-plugin';
 
 export interface EditorOptions {
 	name?: string;

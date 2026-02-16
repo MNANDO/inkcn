@@ -9,7 +9,7 @@ import { TextNode } from 'lexical';
 import { useCallback, useMemo, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { BlockPickerOption } from './lib/BlockPickerOption';
+import { BlockPickerOption } from '@/lib/BlockPickerOption';
 import { BlockPickerMenu } from './block-picker-menu';
 
 type BlockPickerPluginProps = {
