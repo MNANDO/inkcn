@@ -27,7 +27,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { $isImageNode } from '../nodes/ImageNode';
+import { $isImageNode } from '../nodes/image-node';
 
 export const RIGHT_CLICK_IMAGE_COMMAND: LexicalCommand<MouseEvent> =
 	createCommand('RIGHT_CLICK_IMAGE_COMMAND');
@@ -140,7 +140,10 @@ function ImageResizer({
 	imageRef: React.RefObject<HTMLImageElement | null>;
 	maxWidth: number;
 	onResizeStart: () => void;
-	onResizeEnd: (width: 'inherit' | number, height: 'inherit' | number) => void;
+	onResizeEnd: (
+		width: 'inherit' | number,
+		height: 'inherit' | number,
+	) => void;
 }) {
 	const controlWrapperRef = useRef<HTMLDivElement>(null);
 	const startXRef = useRef(0);
@@ -262,7 +265,9 @@ export default function ImageDecorator({
 		useLexicalNodeSelection(nodeKey);
 	const [isResizing, setIsResizing] = useState(false);
 	const [editor] = useLexicalComposerContext();
-	const activeEditorRef = useRef<ReturnType<typeof useLexicalComposerContext>[0] | null>(null);
+	const activeEditorRef = useRef<
+		ReturnType<typeof useLexicalComposerContext>[0] | null
+	>(null);
 	const [isLoadError, setIsLoadError] = useState(false);
 	const isEditable = useLexicalEditable();
 
@@ -276,23 +281,20 @@ export default function ImageDecorator({
 		[editor, isSelected, nodeKey],
 	);
 
-	const $onEscape = useCallback(
-		() => {
-			if (isSelected && isInNodeSelection) {
-				$setSelection(null);
-				editor.update(() => {
-					setSelected(false);
-					const parentRootElement = editor.getRootElement();
-					if (parentRootElement !== null) {
-						parentRootElement.focus();
-					}
-				});
-				return true;
-			}
-			return false;
-		},
-		[editor, isSelected, isInNodeSelection, setSelected],
-	);
+	const $onEscape = useCallback(() => {
+		if (isSelected && isInNodeSelection) {
+			$setSelection(null);
+			editor.update(() => {
+				setSelected(false);
+				const parentRootElement = editor.getRootElement();
+				if (parentRootElement !== null) {
+					parentRootElement.focus();
+				}
+			});
+			return true;
+		}
+		return false;
+	}, [editor, isSelected, isInNodeSelection, setSelected]);
 
 	const onClick = useCallback(
 		(payload: MouseEvent) => {
@@ -323,10 +325,7 @@ export default function ImageDecorator({
 					$isNodeSelection(latestSelection) &&
 					latestSelection.getNodes().length === 1
 				) {
-					editor.dispatchCommand(
-						RIGHT_CLICK_IMAGE_COMMAND,
-						event,
-					);
+					editor.dispatchCommand(RIGHT_CLICK_IMAGE_COMMAND, event);
 				}
 			});
 		},

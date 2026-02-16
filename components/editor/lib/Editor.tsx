@@ -20,7 +20,7 @@ import type { BlockPickerOption } from './BlockPickerOption';
 import { baseBlockPickerOptions } from './base-block-picker-options';
 import BlockPickerPlugin from '../editor-block-picker-plugin';
 import ImagePlugin from '../image-plugin';
-import { ImageNode } from '../nodes/ImageNode';
+import { ImageNode } from '../nodes/image-node';
 
 export interface EditorOptions {
 	name?: string;

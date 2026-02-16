@@ -30,7 +30,7 @@ import {
 	$isImageNode,
 	ImageNode,
 	ImagePayload,
-} from './nodes/ImageNode';
+} from './nodes/image-node';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -199,11 +199,12 @@ function getDragSelection(event: DragEvent): Range | null | undefined {
 	let range;
 	const target = event.target;
 	const targetDocument =
-		target instanceof Node
-			? (target.ownerDocument ?? document)
-			: document;
+		target instanceof Node ? (target.ownerDocument ?? document) : document;
 	if (typeof targetDocument.caretPositionFromPoint === 'function') {
-		const pos = targetDocument.caretPositionFromPoint(event.clientX, event.clientY);
+		const pos = targetDocument.caretPositionFromPoint(
+			event.clientX,
+			event.clientY,
+		);
 		if (pos) {
 			range = targetDocument.createRange();
 			range.setStart(pos.offsetNode, pos.offset);

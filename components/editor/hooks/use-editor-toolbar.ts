@@ -3,15 +3,20 @@ import {
 	$isParagraphNode,
 	$isRangeSelection,
 	$isTextNode,
+	ElementNode,
 	getDOMSelection,
 	LexicalEditor,
+	RangeSelection,
+	TextNode,
 } from 'lexical';
 import { $isHeadingNode, $isQuoteNode } from '@lexical/rich-text';
 import { $isListNode, ListNode } from '@lexical/list';
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
-import { $getSelectionStyleValueForProperty } from '@lexical/selection';
+import {
+	$getSelectionStyleValueForProperty,
+	$isAtNodeEnd,
+} from '@lexical/selection';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getSelectedNode } from '../lib/editor-utils';
 
 export type EditorToolbarState = {
 	isVisible: boolean;
@@ -44,6 +49,24 @@ const DEFAULT_STATE: EditorToolbarState = {
 	fontColor: '',
 	bgColor: '',
 };
+
+export function getSelectedNode(
+	selection: RangeSelection,
+): TextNode | ElementNode {
+	const anchor = selection.anchor;
+	const focus = selection.focus;
+	const anchorNode = selection.anchor.getNode();
+	const focusNode = selection.focus.getNode();
+	if (anchorNode === focusNode) {
+		return anchorNode;
+	}
+	const isBackward = selection.isBackward();
+	if (isBackward) {
+		return $isAtNodeEnd(focus) ? anchorNode : focusNode;
+	} else {
+		return $isAtNodeEnd(anchor) ? anchorNode : focusNode;
+	}
+}
 
 function $getBlockType(
 	editor: LexicalEditor,
@@ -142,8 +165,16 @@ export function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 					isSubscript: selection.hasFormat('subscript'),
 					isSuperscript: selection.hasFormat('superscript'),
 					blockType: $getBlockType(editor, selection),
-					fontColor: $getSelectionStyleValueForProperty(selection, 'color', ''),
-					bgColor: $getSelectionStyleValueForProperty(selection, 'background-color', ''),
+					fontColor: $getSelectionStyleValueForProperty(
+						selection,
+						'color',
+						'',
+					),
+					bgColor: $getSelectionStyleValueForProperty(
+						selection,
+						'background-color',
+						'',
+					),
 				});
 			});
 		},

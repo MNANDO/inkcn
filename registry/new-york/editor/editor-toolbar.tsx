@@ -13,7 +13,6 @@ import {
 	Baseline,
 } from 'lucide-react';
 
-import { filterBlockOptions } from './lib/editor-utils';
 import {
 	TEXT_COLORS,
 	BACKGROUND_COLORS,
@@ -29,11 +28,26 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import type { BlockPickerOption } from './lib/BlockPickerOption';
+import type { BlockCategory, BlockPickerOption } from './lib/BlockPickerOption';
 import { useEditorToolbar } from './hooks/use-editor-toolbar';
 import { useFloatingToolbarPosition } from './hooks/use-floating-toolbar-position';
 import { useTextFormatToggle } from './hooks/use-text-format-toggle';
 import { useColorFormat } from './hooks/use-color-format';
+
+const TOOLBAR_BLOCK_CATEGORIES: BlockCategory[] = [
+	'basic',
+	'headings',
+	'lists',
+	'quotes',
+];
+
+export function filterBlockOptions(
+	options: BlockPickerOption[],
+): BlockPickerOption[] {
+	return options.filter((opt) =>
+		TOOLBAR_BLOCK_CATEGORIES.includes(opt.category),
+	);
+}
 
 interface EditorToolbarProps {
 	editor: LexicalEditor;

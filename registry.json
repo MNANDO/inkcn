@@ -105,11 +105,6 @@
                     "target": "components/editor/hooks/use-color-format.ts"
                 },
                 {
-                    "path": "registry/new-york/editor/lib/editor-utils.ts",
-                    "type": "registry:lib",
-                    "target": "components/editor/lib/editor-utils.ts"
-                },
-                {
                     "path": "registry/new-york/editor/lib/Editor.tsx",
                     "type": "registry:lib",
                     "target": "components/editor/lib/Editor.tsx"

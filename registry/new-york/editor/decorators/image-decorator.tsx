@@ -34,26 +34,50 @@ export const RIGHT_CLICK_IMAGE_COMMAND: LexicalCommand<MouseEvent> =
 
 // --- Image cache for suspense ---
 
-const imageCache = new Map<string, Promise<void> | true>();
+type ImageStatus =
+	| { error: true }
+	| { error: false; width: number; height: number };
 
-function useSuspenseImage(src: string): void {
-	const cached = imageCache.get(src);
-	if (cached === true) {
-		return;
+const imageCache = new Map<string, Promise<ImageStatus> | ImageStatus>();
+
+function useSuspenseImage(src: string): ImageStatus {
+	let cached = imageCache.get(src);
+	if (cached && 'error' in cached && typeof cached.error === 'boolean') {
+		return cached;
 	}
 	if (!cached) {
-		const promise = new Promise<void>((resolve) => {
+		cached = new Promise<ImageStatus>((resolve) => {
 			const img = new Image();
 			img.src = src;
-			img.onload = () => resolve();
-			img.onerror = () => resolve();
-		}).then(() => {
-			imageCache.set(src, true);
+			img.onload = () =>
+				resolve({
+					error: false,
+					height: img.naturalHeight,
+					width: img.naturalWidth,
+				});
+			img.onerror = () => resolve({ error: true });
+		}).then((result) => {
+			imageCache.set(src, result);
+			return result;
 		});
-		imageCache.set(src, promise);
-		throw promise;
+		imageCache.set(src, cached);
+		throw cached;
 	}
 	throw cached;
+}
+
+// --- Sub-components ---
+
+function BrokenImage(): JSX.Element {
+	return (
+		// eslint-disable-next-line @next/next/no-img-element
+		<img
+			src="/images/image-broken.svg"
+			style={{ height: 200, opacity: 0.2, width: 200 }}
+			draggable="false"
+			alt="Broken image"
+		/>
+	);
 }
 
 function LazyImage({
@@ -64,6 +88,7 @@ function LazyImage({
 	width,
 	height,
 	maxWidth,
+	onError,
 }: {
 	altText: string;
 	className: string | null;
@@ -72,8 +97,19 @@ function LazyImage({
 	maxWidth: number;
 	src: string;
 	width: 'inherit' | number;
+	onError: () => void;
 }): JSX.Element {
-	useSuspenseImage(src);
+	const status = useSuspenseImage(src);
+
+	useEffect(() => {
+		if (status.error) {
+			onError();
+		}
+	}, [status.error, onError]);
+
+	if (status.error) {
+		return <BrokenImage />;
+	}
 
 	return (
 		// eslint-disable-next-line @next/next/no-img-element
@@ -87,10 +123,13 @@ function LazyImage({
 				maxWidth,
 				width,
 			}}
+			onError={onError}
 			draggable="false"
 		/>
 	);
 }
+
+// --- Image Resizer ---
 
 function ImageResizer({
 	imageRef,
@@ -202,6 +241,8 @@ function ImageResizer({
 	);
 }
 
+// --- Main Component ---
+
 export default function ImageDecorator({
 	src,
 	altText,
@@ -227,7 +268,7 @@ export default function ImageDecorator({
 	const activeEditorRef = useRef<
 		ReturnType<typeof useLexicalComposerContext>[0] | null
 	>(null);
-
+	const [isLoadError, setIsLoadError] = useState(false);
 	const isEditable = useLexicalEditable();
 
 	const isInNodeSelection = useMemo(
@@ -375,19 +416,24 @@ export default function ImageDecorator({
 	return (
 		<Suspense fallback={null}>
 			<div draggable={draggable} className="relative inline-block">
-				<LazyImage
-					className={
-						isFocused
-							? `focused ${isInNodeSelection ? 'draggable' : ''}`
-							: null
-					}
-					src={src}
-					altText={altText}
-					imageRef={imageRef}
-					width={width}
-					height={height}
-					maxWidth={maxWidth}
-				/>
+				{isLoadError ? (
+					<BrokenImage />
+				) : (
+					<LazyImage
+						className={
+							isFocused
+								? `focused ${isInNodeSelection ? 'draggable' : ''}`
+								: null
+						}
+						src={src}
+						altText={altText}
+						imageRef={imageRef}
+						width={width}
+						height={height}
+						maxWidth={maxWidth}
+						onError={() => setIsLoadError(true)}
+					/>
+				)}
 				{resizable && isInNodeSelection && isFocused && (
 					<ImageResizer
 						imageRef={imageRef}

@@ -10,9 +10,7 @@ import {
 } from 'lexical';
 import { JSX, lazy, Suspense } from 'react';
 
-const ImageDecorator = lazy(
-	() => import('../decorators/ImageDecorator'),
-);
+const ImageDecorator = lazy(() => import('../decorators/image-decorator'));
 
 export interface ImagePayload {
 	altText: string;
