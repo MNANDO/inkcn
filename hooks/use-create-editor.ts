@@ -16,6 +16,7 @@ export interface UseCreateEditorOptions {
 	nodes?: Array<Klass<LexicalNode>>;
 	extensions?: AnyLexicalExtension[];
 	initialEditorState?: InitialEditorStateType;
+	onImageUpload?: (file: File) => Promise<string>;
 }
 
 export const useCreateEditor = (options: UseCreateEditorOptions = {}) => {

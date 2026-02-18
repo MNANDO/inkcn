@@ -25,57 +25,47 @@
             ],
             "files": [
                 {
-                    "path": "registry/new-york/editor/editor-view.tsx",
+                    "path": "components/editor/editor-view.tsx",
                     "type": "registry:component",
                     "target": "components/editor/editor-view.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/editor-toolbar.tsx",
-                    "type": "registry:component",
-                    "target": "components/editor/editor-toolbar.tsx"
-                },
-                {
-                    "path": "registry/new-york/editor/editor-toolbar-plugin.tsx",
+                    "path": "components/editor/editor-toolbar-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/editor-toolbar-plugin.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/readonly-plugin.tsx",
+                    "path": "components/editor/readonly-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/readonly-plugin.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/editor-block-control-plugin.tsx",
+                    "path": "components/editor/editor-block-control-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/editor-block-control-plugin.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/editor-block-picker-plugin.tsx",
+                    "path": "components/editor/editor-block-picker-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/editor-block-picker-plugin.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/block-picker-menu.tsx",
+                    "path": "components/editor/block-picker-menu.tsx",
                     "type": "registry:component",
                     "target": "components/editor/block-picker-menu.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/block-picker-menu-item.tsx",
-                    "type": "registry:component",
-                    "target": "components/editor/block-picker-menu-item.tsx"
-                },
-                {
-                    "path": "registry/new-york/editor/decorators/image-decorator.tsx",
+                    "path": "components/editor/decorators/image-decorator.tsx",
                     "type": "registry:component",
                     "target": "components/editor/decorators/image-decorator.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/nodes/image-node.tsx",
+                    "path": "components/editor/nodes/image-node.tsx",
                     "type": "registry:component",
                     "target": "components/editor/nodes/image-node.tsx"
                 },
                 {
-                    "path": "registry/new-york/editor/image-plugin.tsx",
+                    "path": "components/editor/image-plugin.tsx",
                     "type": "registry:component",
                     "target": "components/editor/image-plugin.tsx"
                 },

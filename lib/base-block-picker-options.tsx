@@ -27,7 +27,7 @@ import {
 	INSERT_UNORDERED_LIST_COMMAND,
 } from '@lexical/list';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
-import { OPEN_INSERT_IMAGE_DIALOG_COMMAND } from '@/registry/new-york/editor/image-plugin';
+import { OPEN_INSERT_IMAGE_DIALOG_COMMAND } from '@/components/editor/image-plugin';
 import { BlockPickerOption } from './BlockPickerOption';
 
 export const baseBlockPickerOptions: BlockPickerOption[] = [

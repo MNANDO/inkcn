@@ -20,7 +20,7 @@ import type { BlockPickerOption } from './BlockPickerOption';
 import { baseBlockPickerOptions } from './base-block-picker-options';
 import { ImageNode } from '@/components/editor/nodes/image-node';
 import BlockPickerPlugin from '@/components/editor/editor-block-picker-plugin';
-import ImagePlugin from '@/registry/new-york/editor/image-plugin';
+import ImagePlugin from '@/components/editor/image-plugin';
 
 export interface EditorOptions {
 	name?: string;
@@ -29,11 +29,13 @@ export interface EditorOptions {
 	extensions?: AnyLexicalExtension[];
 	blockPickerOptions?: BlockPickerOption[];
 	initialEditorState?: InitialEditorStateType;
+	onImageUpload?: (file: File) => Promise<string>;
 }
 
 export class Editor {
 	private _lexicalExtension: AnyLexicalExtension;
 	private _blockPickerOptions: BlockPickerOption[];
+	private _onImageUpload?: (file: File) => Promise<string>;
 
 	constructor(options: EditorOptions) {
 		const {
@@ -44,6 +46,7 @@ export class Editor {
 			blockPickerOptions = [],
 			initialEditorState,
 		} = options;
+		this._onImageUpload = options.onImageUpload;
 		this._blockPickerOptions = [
 			...baseBlockPickerOptions,
 			...blockPickerOptions,
@@ -68,7 +71,10 @@ export class Editor {
 								...blockPickerOptions,
 							]}
 						/>,
-						<ImagePlugin key="image" />,
+						<ImagePlugin
+							key="image"
+							onUploadImage={this._onImageUpload}
+						/>,
 					],
 				}),
 				...extensions,

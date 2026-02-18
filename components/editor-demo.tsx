@@ -1,10 +1,10 @@
 'use client';
 
 import { useCreateEditor } from '@/hooks/use-create-editor';
-import { EditorView } from '@/registry/new-york/editor/editor-view';
 import { $createListItemNode, $createListNode } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
+import { EditorView } from '@/components/editor/editor-view';
 
 function prepopulatedRichText() {
 	const root = $getRoot();
@@ -74,6 +74,9 @@ export default function EditorDemo() {
 	const editor = useCreateEditor({
 		name: '@inkcn/editor',
 		initialEditorState: prepopulatedRichText,
+		onImageUpload: async (file) => {
+			return URL.createObjectURL(file);
+		},
 	});
 
 	return <EditorView editor={editor} />;
