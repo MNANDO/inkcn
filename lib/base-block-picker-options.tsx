@@ -27,8 +27,8 @@ import {
 	INSERT_UNORDERED_LIST_COMMAND,
 } from '@lexical/list';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
+import { OPEN_INSERT_IMAGE_DIALOG_COMMAND } from '@/registry/new-york/editor/image-plugin';
 import { BlockPickerOption } from './BlockPickerOption';
-import { INSERT_IMAGE_COMMAND } from '@/components/editor/image-plugin';
 
 export const baseBlockPickerOptions: BlockPickerOption[] = [
 	new BlockPickerOption({
@@ -184,13 +184,7 @@ export const baseBlockPickerOptions: BlockPickerOption[] = [
 		keywords: ['image', 'img', 'picture', 'photo'],
 		category: 'advanced',
 		insert: ({ editor }) => {
-			const src = window.prompt('Enter image URL');
-			if (src) {
-				editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-					src,
-					altText: '',
-				});
-			}
+			editor.dispatchCommand(OPEN_INSERT_IMAGE_DIALOG_COMMAND, undefined);
 		},
 	}),
 ];
