@@ -55,21 +55,6 @@
                     "target": "components/editor/block-picker-menu.tsx"
                 },
                 {
-                    "path": "components/editor/decorators/image-decorator.tsx",
-                    "type": "registry:component",
-                    "target": "components/editor/decorators/image-decorator.tsx"
-                },
-                {
-                    "path": "components/editor/nodes/image-node.tsx",
-                    "type": "registry:component",
-                    "target": "components/editor/nodes/image-node.tsx"
-                },
-                {
-                    "path": "components/editor/image-plugin.tsx",
-                    "type": "registry:component",
-                    "target": "components/editor/image-plugin.tsx"
-                },
-                {
                     "path": "hooks/use-create-editor.ts",
                     "type": "registry:hook",
                     "target": "hooks/use-create-editor.ts"
@@ -108,6 +93,28 @@
                     "path": "lib/color-options.ts",
                     "type": "registry:lib",
                     "target": "lib/color-options.ts"
+                }
+            ]
+        },
+        {
+            "name": "editor-image",
+            "type": "registry:block",
+            "title": "Image Extension",
+            "description": "An extension for the Inkcn editor to use image blocks",
+            "registryDependencies": [
+                "https://inkcn.vercel.app/r/editor.json",
+                "dialog"
+            ],
+            "files": [
+                {
+                    "path": "components/editor/nodes/image-node.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/nodes/image-node.tsx"
+                },
+                {
+                    "path": "components/editor/extensions/image-extension.tsx",
+                    "type": "registry:component",
+                    "target": "components/editor/extensions/image-extension.tsx"
                 }
             ]
         }

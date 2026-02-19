@@ -9,7 +9,9 @@ import {
 	$insertNodes,
 	$isRootOrShadowRoot,
 	COMMAND_PRIORITY_EDITOR,
+	configExtension,
 	createCommand,
+	defineExtension,
 	LexicalCommand,
 	LexicalEditor,
 } from 'lexical';
@@ -23,11 +25,7 @@ import {
 	useState,
 } from 'react';
 
-import {
-	$createImageNode,
-	ImageNode,
-	ImagePayload,
-} from './nodes/image-node';
+import { $createImageNode, ImageNode, ImagePayload } from '../nodes/image-node';
 import {
 	Dialog,
 	DialogContent,
@@ -38,6 +36,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ReactExtension } from '@lexical/react/ReactExtension';
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -47,19 +46,21 @@ export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
 export const OPEN_INSERT_IMAGE_DIALOG_COMMAND: LexicalCommand<void> =
 	createCommand('OPEN_INSERT_IMAGE_DIALOG');
 
-interface ImagePluginProps {
+interface ImageDecoratorProps {
 	onUploadImage?: (file: File) => Promise<string>;
 }
 
-export default function ImagePlugin({
+function ImageDecorator({
 	onUploadImage,
-}: ImagePluginProps = {}): JSX.Element | null {
+}: ImageDecoratorProps = {}): JSX.Element | null {
 	const [editor] = useLexicalComposerContext();
 	const [showDialog, setShowDialog] = useState(false);
 
 	useEffect(() => {
 		if (!editor.hasNodes([ImageNode])) {
-			throw new Error('ImagePlugin: ImageNode not registered on editor');
+			throw new Error(
+				'ImageDecorator: ImageNode not registered on editor',
+			);
 		}
 
 		return mergeRegister(
@@ -123,7 +124,13 @@ function useFileDrop(onFile: (file: File) => void) {
 		setIsDragging(false);
 	}
 
-	return { isDragging, handleDrop, handleDragOver, handleDragLeave, resetDragging };
+	return {
+		isDragging,
+		handleDrop,
+		handleDragOver,
+		handleDragLeave,
+		resetDragging,
+	};
 }
 
 interface InsertImageDialogProps {
@@ -150,7 +157,13 @@ export function InsertImageDialog({
 		setPreview(URL.createObjectURL(f));
 	}
 
-	const { isDragging, handleDrop, handleDragOver, handleDragLeave, resetDragging } = useFileDrop(handleFile);
+	const {
+		isDragging,
+		handleDrop,
+		handleDragOver,
+		handleDragLeave,
+		resetDragging,
+	} = useFileDrop(handleFile);
 
 	const reset = useCallback(() => {
 		setFile(null);
@@ -240,10 +253,7 @@ export function InsertImageDialog({
 						onChange={(e) => setAltText(e.target.value)}
 					/>
 					<DialogFooter>
-						<Button
-							type="submit"
-							disabled={!file || isUploading}
-						>
+						<Button type="submit" disabled={!file || isUploading}>
 							{isUploading ? 'Uploading...' : 'Upload'}
 						</Button>
 					</DialogFooter>
@@ -252,3 +262,20 @@ export function InsertImageDialog({
 		</Dialog>
 	);
 }
+
+export const createImageExtension = (
+	onImageUpload?: (file: File) => Promise<string>,
+) =>
+	defineExtension({
+		name: '@inkcn/image',
+		dependencies: [
+			configExtension(ReactExtension, {
+				decorators: [
+					<ImageDecorator
+						key="image"
+						onUploadImage={onImageUpload}
+					/>,
+				],
+			}),
+		],
+	});

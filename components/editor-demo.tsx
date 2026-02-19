@@ -5,6 +5,13 @@ import { $createListItemNode, $createListNode } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical';
 import { EditorView } from '@/components/editor/editor-view';
+import {
+	createImageExtension,
+	OPEN_INSERT_IMAGE_DIALOG_COMMAND,
+} from './editor/extensions/image-extension';
+import { ImageNode } from './editor/nodes/image-node';
+import { BlockPickerOption } from '@/lib/BlockPickerOption';
+import { Image } from 'lucide-react';
 
 function prepopulatedRichText() {
 	const root = $getRoot();
@@ -71,12 +78,31 @@ function prepopulatedRichText() {
 }
 
 export default function EditorDemo() {
+	const imageExtension = createImageExtension(async (file) => {
+		return URL.createObjectURL(file);
+	});
+
 	const editor = useCreateEditor({
 		name: '@inkcn/editor',
 		initialEditorState: prepopulatedRichText,
-		onImageUpload: async (file) => {
-			return URL.createObjectURL(file);
-		},
+		extensions: [imageExtension],
+		nodes: [ImageNode],
+		blockPickerOptions: [
+			new BlockPickerOption({
+				id: 'image',
+				title: 'Image',
+				// eslint-disable-next-line jsx-a11y/alt-text
+				icon: <Image />,
+				keywords: ['image', 'img', 'picture', 'photo'],
+				category: 'advanced',
+				insert: ({ editor }) => {
+					editor.dispatchCommand(
+						OPEN_INSERT_IMAGE_DIALOG_COMMAND,
+						undefined,
+					);
+				},
+			}),
+		],
 	});
 
 	return <EditorView editor={editor} />;

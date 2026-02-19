@@ -9,6 +9,7 @@ import {
 } from 'lexical';
 import { useState } from 'react';
 import { Editor } from '@/lib/Editor';
+import { BlockPickerOption } from '@/lib/BlockPickerOption';
 
 export interface UseCreateEditorOptions {
 	name?: string;
@@ -16,7 +17,7 @@ export interface UseCreateEditorOptions {
 	nodes?: Array<Klass<LexicalNode>>;
 	extensions?: AnyLexicalExtension[];
 	initialEditorState?: InitialEditorStateType;
-	onImageUpload?: (file: File) => Promise<string>;
+	blockPickerOptions?: BlockPickerOption[];
 }
 
 export const useCreateEditor = (options: UseCreateEditorOptions = {}) => {
