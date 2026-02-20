@@ -5,7 +5,6 @@ import {
 	Heading1,
 	Heading2,
 	Heading3,
-	Image,
 	List,
 	ListChecks,
 	ListOrdered,
@@ -26,8 +25,8 @@ import {
 	INSERT_ORDERED_LIST_COMMAND,
 	INSERT_UNORDERED_LIST_COMMAND,
 } from '@lexical/list';
-import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
-import { OPEN_INSERT_IMAGE_DIALOG_COMMAND } from '@/components/editor/extensions/image-extension';
+import { $createHorizontalRuleNode } from '@lexical/extension';
+import { $insertNodeToNearestRoot } from '@lexical/utils';
 import { BlockPickerOption } from './BlockPickerOption';
 
 export const baseBlockPickerOptions: BlockPickerOption[] = [
@@ -143,7 +142,16 @@ export const baseBlockPickerOptions: BlockPickerOption[] = [
 		keywords: ['horizontal rule', 'divider', 'hr'],
 		category: 'dividers',
 		insert: ({ editor }) => {
-			editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined);
+			editor.update(() => {
+				const selection = $getSelection();
+				if ($isRangeSelection(selection)) {
+					const focusNode = selection.focus.getNode();
+					if (focusNode !== null) {
+						const horizontalRuleNode = $createHorizontalRuleNode();
+						$insertNodeToNearestRoot(horizontalRuleNode);
+					}
+				}
+			});
 		},
 	}),
 	new BlockPickerOption({

@@ -47,9 +47,9 @@ function prepopulatedRichText() {
 		const list = $createListNode('bullet');
 		list.append(
 			$createListItemNode().append(
-				$createTextNode(
-					`Run npx shadcn add <url> to install any component from the registry.`,
-				),
+				$createTextNode(`Run `),
+				$createTextNode(`npx shadcn add <url>`).toggleFormat('code'),
+				$createTextNode(` to install any component from the registry.`),
 			),
 			$createListItemNode().append(
 				$createTextNode(`Components are fully typed with TypeScript.`),

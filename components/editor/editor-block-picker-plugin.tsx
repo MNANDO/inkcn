@@ -50,12 +50,12 @@ export default function BlockPickerPlugin({
 		) => {
 			editor.update(() => {
 				nodeToRemove?.remove();
-				selectedOption.insert({
-					editor,
-					queryString: matchingString,
-				});
-				closeMenu();
 			});
+			selectedOption.insert({
+				editor,
+				queryString: matchingString,
+			});
+			closeMenu();
 		},
 		[editor],
 	);

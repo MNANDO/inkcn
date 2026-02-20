@@ -25,6 +25,7 @@ import {
 	Italic,
 	Underline,
 	Strikethrough,
+	Code,
 	ChevronDown,
 	Baseline,
 } from 'lucide-react';
@@ -59,6 +60,7 @@ export interface TextFormatState {
 	isItalic: boolean;
 	isUnderline: boolean;
 	isStrikethrough: boolean;
+	isCode: boolean;
 }
 
 interface UseTextFormatToggleResult {
@@ -71,13 +73,15 @@ const FORMATS: TextFormatType[] = [
 	'italic',
 	'underline',
 	'strikethrough',
+	'code',
 ];
 
 function useTextFormatToggle(
 	editor: LexicalEditor,
 	formatState: TextFormatState,
 ): UseTextFormatToggleResult {
-	const { isBold, isItalic, isUnderline, isStrikethrough } = formatState;
+	const { isBold, isItalic, isUnderline, isStrikethrough, isCode } =
+		formatState;
 
 	const currentValues = useMemo(
 		() => [
@@ -85,8 +89,9 @@ function useTextFormatToggle(
 			...(isItalic ? ['italic'] : []),
 			...(isUnderline ? ['underline'] : []),
 			...(isStrikethrough ? ['strikethrough'] : []),
+			...(isCode ? ['code'] : []),
 		],
-		[isBold, isItalic, isUnderline, isStrikethrough],
+		[isBold, isItalic, isUnderline, isStrikethrough, isCode],
 	);
 
 	const handleValueChange = useCallback(
@@ -99,14 +104,16 @@ function useTextFormatToggle(
 							? isItalic
 							: format === 'underline'
 								? isUnderline
-								: isStrikethrough;
+								: format === 'strikethrough'
+									? isStrikethrough
+									: isCode;
 				const shouldBeActive = values.includes(format);
 				if (isActive !== shouldBeActive) {
 					editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
 				}
 			});
 		},
-		[editor, isBold, isItalic, isUnderline, isStrikethrough],
+		[editor, isBold, isItalic, isUnderline, isStrikethrough, isCode],
 	);
 
 	return { handleValueChange, currentValues };
@@ -343,6 +350,7 @@ type EditorToolbarState = {
 	isLowercase: boolean;
 	isCapitalize: boolean;
 	isStrikethrough: boolean;
+	isCode: boolean;
 	isSubscript: boolean;
 	isSuperscript: boolean;
 	blockType: string;
@@ -359,6 +367,7 @@ const DEFAULT_STATE: EditorToolbarState = {
 	isLowercase: false,
 	isCapitalize: false,
 	isStrikethrough: false,
+	isCode: false,
 	isSubscript: false,
 	isSuperscript: false,
 	blockType: 'paragraph',
@@ -476,6 +485,7 @@ function useEditorToolbar(editor: LexicalEditor): EditorToolbarState {
 					isLowercase: selection.hasFormat('lowercase'),
 					isCapitalize: selection.hasFormat('capitalize'),
 					isStrikethrough: selection.hasFormat('strikethrough'),
+					isCode: selection.hasFormat('code'),
 					isSubscript: selection.hasFormat('subscript'),
 					isSuperscript: selection.hasFormat('superscript'),
 					blockType: $getBlockType(editor, selection),
@@ -682,6 +692,14 @@ function EditorToolbar({
 					aria-label="Format text with a strikethrough"
 				>
 					<Strikethrough className="h-2 w-2" />
+				</ToggleGroupItem>
+
+				<ToggleGroupItem
+					value="code"
+					title="Code"
+					aria-label="Format text as code"
+				>
+					<Code className="h-2 w-2" />
 				</ToggleGroupItem>
 			</ToggleGroup>
 
